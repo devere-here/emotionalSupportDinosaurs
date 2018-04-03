@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import SpeechRecognition from 'react-speech-recognition'
 import { fetchPhrases, fetchDefinition, fetchTasks, removeTask, addTask } from '../store'
@@ -417,5 +416,3 @@ const options = {
 
 
 export default connect(mapState, mapDispatch)(SpeechRecognition(options)(AudioRecognition))
-
-
