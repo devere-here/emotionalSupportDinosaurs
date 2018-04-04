@@ -5,6 +5,23 @@ import { fetchPhrases, fetchDefinition, fetchTasks, removeTask, addTask } from '
 import axios from 'axios';
 var GifPlayer = require('react-gif-player');
 
+function calculator(firstNumber, secondNumber, operation){
+
+  let answer;
+  if (operation === '+' || operation === 'plus') {
+    answer = firstNumber + secondNumber;
+  } else if (operation === '-' || operation === 'minus') {
+    answer = firstNumber - secondNumber;
+  } else if (operation === '*' || operation === 'times' || operation === 'multiplied') {
+    answer = firstNumber * secondNumber;
+  } else if (operation === '/' || operation === 'divided') {
+    answer = firstNumber / secondNumber;
+  }
+
+  return answer;
+
+}
+
 let addedEmotion = {
     happy: (<h1>Yay!</h1>),
     sad: (<div>
@@ -199,6 +216,8 @@ class AudioRecognition extends Component {
 
   emotionHandler(word) {
 
+    console.log('this.props.motivationalWords', this.props.motivationalWords);
+
     this.response = this.props.motivationalWords[word].response;
     this.videoUrl = this.props.motivationalWords[word].videoUrl;
     this.addedMedia = <iframe src={`${this.videoUrl}?autoplay=1`} allow="autoplay; encrypted-media" allowFullScreen />
@@ -216,36 +235,26 @@ class AudioRecognition extends Component {
     if (weather) {
 
       let fahrenheit = weather.data.main.temp * 1.8 + 32;
-      let percipitation = weather.data.weather[0].main;
-      if (percipitation === 'Clear') percipitation = 'Clear Skies';
       fahrenheit = Math.round(fahrenheit).toString();
+      let percipitation = weather.data.weather[0].main === 'Clear' ? 'Clear Skies' : weather.data.weather[0].main;
       this.response = `It is ${fahrenheit} degrees fahrenheit outside with ${percipitation}`;
-      window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response));
-      this.props.stopListening();
-      this.typeOfResponse = 'weather';
+      this.addedMedia = <img height="150px" src={this.props.weatherImages[this.weather.data.weather[0].main]} />
 
     } else {
-      window.speechSynthesis.speak(new SpeechSynthesisUtterance('The temperature and weather is currently unavailiable'));
+      this.response = 'The temperature and weather is currently unavailiable';
     }
 
     this.found = true;
-    console.log('this.weather.data.weather', this.weather.data.weather);
-    this.addedMedia = <img height="150px" src={this.props.weatherImages[this.weather.data.weather[0].main]} />
+    this.props.stopListening();
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response));
+    this.typeOfResponse = 'weather';
+
 
   }
 
   mathHandler(firstNumber, secondNumber, operation) {
 
-    let answer;
-    if (operation === '+' || operation === 'plus') {
-      answer = firstNumber + secondNumber;
-    } else if (operation === '-' || operation === 'minus') {
-      answer = firstNumber - secondNumber;
-    } else if (operation === '*' || operation === 'times' || operation === 'multiplied') {
-      answer = firstNumber * secondNumber;
-    } else if (operation === '/' || operation === 'divided') {
-      answer = firstNumber / secondNumber;
-    }
+    let answer = calculator(firstNumber, secondNumber, operation)
 
     window.speechSynthesis.speak(new SpeechSynthesisUtterance(answer));
     this.props.stopListening();
