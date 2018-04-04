@@ -328,8 +328,6 @@ class AudioRecognition extends Component {
     const { transcript, browserSupportsSpeechRecognition, listening } = this.props;
 
     let transcriptArr = transcript.split(' ');
-    let prevWord = '';
-    let prevPrevWord = '';
 
     if (listening === true) {
       console.log('listening');
@@ -337,8 +335,8 @@ class AudioRecognition extends Component {
 
         if (word === 'please') {
 
-          transcriptArr = transcriptArr.map((word) => {
-            return word.toLowerCase();
+          transcriptArr = transcriptArr.map((currentWord) => {
+            return currentWord.toLowerCase();
           })
 
           console.log('in please portion I did the for each arr is', transcriptArr);
@@ -351,13 +349,13 @@ class AudioRecognition extends Component {
             break;
           }
 
-          let spokenDefinition = transcriptArr.find((word) => {
-            console.log('where i want to be', word);
-            return word === 'define' || word === 'definition'
+          let spokenDefinition = transcriptArr.find((currentWord) => {
+            console.log('where i want to be', currentWord);
+            return currentWord === 'define' || currentWord === 'definition'
           });
           if (spokenDefinition) {
             console.log('in spokenDefinition', spokenDefinition);
-            let word, index;
+            let index;
             index = spokenDefinition === 'define'
               ? transcriptArr.indexOf('define') + 1
               : transcriptArr.indexOf('definition') + 2
