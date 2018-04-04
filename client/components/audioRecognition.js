@@ -9,7 +9,7 @@ function calculator(firstNumber, secondNumber, operation){
 
   let answer;
   if (operation === '+' || operation === 'plus') {
-    answer = firstNumber + secondNumber;
+    answer = +(firstNumber) + +(secondNumber);
   } else if (operation === '-' || operation === 'minus') {
     answer = firstNumber - secondNumber;
   } else if (operation === '*' || operation === 'times' || operation === 'multiplied') {
@@ -332,10 +332,16 @@ class AudioRecognition extends Component {
     let prevPrevWord = '';
 
     if (listening === true) {
+      console.log('listening');
       for (let word of transcriptArr) {
+
         if (word === 'please') {
 
-          console.log('in please portion');
+          transcriptArr = transcriptArr.map((word) => {
+            return word.toLowerCase();
+          })
+
+          console.log('in please portion I did the for each arr is', transcriptArr);
 
           let spokenFeeling = this.feelings.find((feeling) => {
             return transcriptArr.includes(feeling);
@@ -346,9 +352,11 @@ class AudioRecognition extends Component {
           }
 
           let spokenDefinition = transcriptArr.find((word) => {
+            console.log('where i want to be', word);
             return word === 'define' || word === 'definition'
           });
           if (spokenDefinition) {
+            console.log('in spokenDefinition', spokenDefinition);
             let word, index;
             index = spokenDefinition === 'define'
               ? transcriptArr.indexOf('define') + 1

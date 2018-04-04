@@ -2,6 +2,7 @@ const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
 const axios = require('axios');
 const ImageApi = require('gettyimages-api');
+const imageCreds = require('../../secrets');
 
 module.exports = router;
 
@@ -9,8 +10,6 @@ router.post('/', asyncHandler(async (req, res, next) => {
 
   req.body.word = req.body.word.toLowerCase();
   console.log('about to get stock photo');
-
-  var imageCreds = { apiKey: '5cur8arcz3m6aww3bcqaju5s', apiSecret: 'UGXNMKjnTdG6SkuJTJpt3AcZNUuzGEzxdYFDDnpNVw5Bk', username: 'stevendeverehere', password: '2Diz+Kit3' };
 
   let value = await axios.get(`https://owlbot.info/api/v2/dictionary/${req.body.word}/?format=json`);
 
