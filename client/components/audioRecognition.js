@@ -6,6 +6,7 @@ import axios from 'axios';
 var GifPlayer = require('react-gif-player');
 
 let addedEmotion = {
+    happy: (<h1>Yay!</h1>),
     sad: (<div>
             <p>It's perfectly OK to have sad feelings at times. As long as they don't happen too often or last too long, sad feelings — like all emotions — are just a natural part of life.Everyone feels sad at times.</p>
             <h4>Here are some positive ways to deal with sad feelings:</h4>
@@ -17,7 +18,50 @@ let addedEmotion = {
               <li><b>Get support:</b> Even the most capable kids need support. The people in your life who believe in you and care (like parents, friends, and teachers) can comfort you when you feel sad.
               </li>
             </ul>
-          </div>)
+          </div>),
+    angry: (
+      <div>
+        <p>Anger is a normal and even healthy emotion — but it's important to deal with it in a positive way. Uncontrolled anger can hurt your health and your friendships.</p>
+        <h4>Here are some positive ways to deal with anger:</h4>
+        <ul>
+          <li><b>Think before you speak:</b> In the heat of the moment, it's easy to say something you'll later regret. Take a few moments to collect your thoughts before saying anything.
+          </li>
+          <li><b>Once you're calm, express your anger:</b> As soon as you're thinking clearly, tell the people you were angry at why you were angry. State your concerns and needs clearly, but try not to hurt their feelings.
+          </li>
+          <li><b>Identify possible solutions:</b> Work on fixing the issue that made you mad in the first place. Remind yourself that anger won't fix anything and might only make it worse.
+          </li>
+        </ul>
+      </div>
+    ),
+    nervous: (
+      <div>
+        <p>Being nervous is never fun or easy. You may feel your heart beating fast, your palms might sweat or feel clammy, and you may even feel a little bit shaky and out of control. All you need to do to calm yourself down is to remember that everyone gets nervous from time to time and that you’re ultimately in control of your mind and body. If you have the right attitude and have some tricks to help calm you, you’ll be able to get rid of those jitters in no time at all.</p>
+        <h4>Here are some positive ways to deal with nervousness:</h4>
+        <ul>
+          <li><b>Take a deep breath:</b> Sometimes, all you need to do to calm down a bit is to focus on the breath rising and falling from your body. Just stop what you’re doing and work on breathing in and breathing out deeply, and letting yourself take long, careful breaths instead of taking the shorter breaths people tend to take when they’re nervous.
+          </li>
+          <li><b>Distract yourself:</b> Though you can’t ignore your fears or worries forever, if you feel like there’s nothing you can do to address it except to worry more, then you may just want to take your mind off of it for a little while. Do something that you think will help you forget your worries and feel more at ease, such as, Reading or watching TV.
+          </li>
+          <li><b>Get the nervous energy out:</b> Try releasing the nervous energy you have through physical activity such as dancing, singing, or running.
+          </li>
+        </ul>
+      </div>
+    ),
+    lonely: (
+      <div>
+        <p>Don’t let yourself fall into the trap of believing that loneliness is forever. You might feel lonely today, this week, or even this month, but it doesn’t mean you are alone or that you have no one who cares for you. Like all feelings, loneliness is impermanent and it does not define who you are. Accept that you feel lonely, then focus on moving forward.</p>
+        <h4>Here are some positive ways to deal with lonliness:</h4>
+        <ul>
+          <li><b>Help Others:</b> Helping others eases loneliness because it makes us be less focused on ourselves. It could be a classmate or a relative who might benefit from some time hanging out with you.
+          </li>
+          <li><b>Do something creative:</b> Try a coloring book or a jigsaw puzzle. Or think outside the box and come up with something that is fun and soothing for you to do
+          </li>
+          <li><b>Sing:</b> It’s almost impossible to feel lonely when you’re singing. I’ve tried it, and it works. Sing solo or let your favorite singer keep you company as you sing together.
+          </li>
+        </ul>
+      </div>
+    )
+
 }
 
 class AudioRecognition extends Component {
@@ -80,6 +124,7 @@ class AudioRecognition extends Component {
         axios.get(weatherUrl)
           .then((weatherData) => {
             this.weather = weatherData;
+            console.log('weather data has been set up');
           })
       })
     }
@@ -166,6 +211,7 @@ class AudioRecognition extends Component {
   }
 
   weatherHandler(weather) {
+    console.log('in weatherHandler');
 
     if (weather) {
 
@@ -183,6 +229,7 @@ class AudioRecognition extends Component {
     }
 
     this.found = true;
+    console.log('this.weather.data.weather', this.weather.data.weather);
     this.addedMedia = <img height="150px" src={this.props.weatherImages[this.weather.data.weather[0].main]} />
 
   }
@@ -228,8 +275,6 @@ class AudioRecognition extends Component {
       this.typeOfResponse = 'list';
       this.listening = 'false';
 
-
-
     } else if (arr.includes('remove') || arr.includes('delete')) {
 
       modifierIndex = arr.indexOf('remove');
@@ -271,7 +316,7 @@ class AudioRecognition extends Component {
   render() {
     console.log('dinosaur', this.props.dinosaur);
 
-    const { transcript, stopListening, browserSupportsSpeechRecognition, listening } = this.props;
+    const { transcript, browserSupportsSpeechRecognition, listening } = this.props;
 
     let transcriptArr = transcript.split(' ');
     let prevWord = '';
@@ -280,6 +325,9 @@ class AudioRecognition extends Component {
     if (listening === true) {
       for (let word of transcriptArr) {
         if (word === 'please') {
+
+          console.log('in please portion');
+
           let spokenFeeling = this.feelings.find((feeling) => {
             return transcriptArr.includes(feeling);
           });
@@ -315,6 +363,7 @@ class AudioRecognition extends Component {
           });
 
           if (spokenWeather) {
+            console.log('in spoken weather');
             this.weatherHandler(this.weather);
             break;
           }

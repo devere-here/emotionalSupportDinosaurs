@@ -1,8 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
-import {logout} from '../store'
 
 const Home = () => (
   <div id="home">
@@ -14,20 +11,4 @@ const Home = () => (
   </div>
 )
 
-/**
- * CONTAINER
- */
-const mapState = state => {
-  return {
-  }
-}
-
-const mapDispatch = dispatch => {
-  return {
-
-  }
-}
-
-export default connect(mapState, mapDispatch)(Home)
-
-
+export default Home;

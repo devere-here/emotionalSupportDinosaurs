@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
-const { MotivationalWords } = require('../db/models');
 const axios = require('axios');
 const ImageApi = require('gettyimages-api');
 
@@ -13,7 +12,9 @@ router.post('/', asyncHandler(async (req, res, next) => {
   let value = await axios.get(`https://owlbot.info/api/v2/dictionary/${req.body.word}/?format=json`);
 
   let client = new ImageApi(imageCreds);
-  client.search().images().withPage(1).withPageSize(1).withPhrase(`${req.body.word}`)
+  client.search().images().withPage(1)
+  .withPageSize(1)
+  .withPhrase(`${req.body.word}`)
       .execute(function(err, response) {
           if (err) throw err
           value.data[0].image = response.images[0].display_sizes[0].uri;

@@ -1,5 +1,4 @@
 import axios from 'axios'
-import history from '../history'
 
 /**
  * ACTION TYPES
@@ -36,7 +35,6 @@ export const fetchPhrases = () => async (dispatch) => {
     console.log(err)
   }
 }
-
 
 /**
  * REDUCER
