@@ -13,7 +13,6 @@ class Choose extends Component{
   }
 
   handleClick(dinosaur){
-    console.log('in handleClick');
     this.props.pickDinosaur(dinosaur)
   }
 
