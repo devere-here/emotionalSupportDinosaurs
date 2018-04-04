@@ -5,20 +5,83 @@ import { fetchPhrases, fetchDefinition, fetchTasks, removeTask, addTask } from '
 import axios from 'axios';
 var GifPlayer = require('react-gif-player');
 
+
 let addedEmotion = {
-    sad: (<div>
-            <p>It's perfectly OK to have sad feelings at times. As long as they don't happen too often or last too long, sad feelings — like all emotions — are just a natural part of life.Everyone feels sad at times.</p>
-            <h4>Here are some positive ways to deal with sad feelings:</h4>
-            <ul>
-              <li><b>Notice how you feel and why:</b> Knowing your emotions helps you understand and accept yourself. If you feel sad, notice it — but don't dwell on it too long or give it too much drama. Show yourself a little understanding. Remind yourself that sadness will pass and you'll feel better.
-              </li>
-              <li><b>Bounce back from disappointments or failures:</b> When things don't go your way, don't give up! Stay in the game. There's always next time. Give yourself credit for trying.
-              </li>
-              <li><b>Get support:</b> Even the most capable kids need support. The people in your life who believe in you and care (like parents, friends, and teachers) can comfort you when you feel sad.
-              </li>
-            </ul>
-          </div>)
+  happy: (<h1>Yay!</h1>),
+  sad: (<div>
+          <p>It's perfectly OK to have sad feelings at times. As long as they don't happen too often or last too long, sad feelings — like all emotions — are just a natural part of life.Everyone feels sad at times.</p>
+          <h4>Here are some positive ways to deal with sad feelings:</h4>
+          <ul>
+            <li><b>Notice how you feel and why:</b> Knowing your emotions helps you understand and accept yourself. If you feel sad, notice it — but don't dwell on it too long or give it too much drama. Show yourself a little understanding. Remind yourself that sadness will pass and you'll feel better.
+            </li>
+            <li><b>Bounce back from disappointments or failures:</b> When things don't go your way, don't give up! Stay in the game. There's always next time. Give yourself credit for trying.
+            </li>
+            <li><b>Get support:</b> Even the most capable kids need support. The people in your life who believe in you and care (like parents, friends, and teachers) can comfort you when you feel sad.
+            </li>
+          </ul>
+        </div>),
+  angry: (
+    <div>
+      <p>Anger is a normal and even healthy emotion — but it's important to deal with it in a positive way. Uncontrolled anger can hurt your health and your friendships.</p>
+      <h4>Here are some positive ways to deal with anger:</h4>
+      <ul>
+        <li><b>Think before you speak:</b> In the heat of the moment, it's easy to say something you'll later regret. Take a few moments to collect your thoughts before saying anything.
+        </li>
+        <li><b>Once you're calm, express your anger:</b> As soon as you're thinking clearly, tell the people you were angry at why you were angry. State your concerns and needs clearly, but try not to hurt their feelings.
+        </li>
+        <li><b>Identify possible solutions:</b> Work on fixing the issue that made you mad in the first place. Remind yourself that anger won't fix anything and might only make it worse.
+        </li>
+      </ul>
+    </div>
+  ),
+  nervous: (
+    <div>
+      <p>Being nervous is never fun or easy. You may feel your heart beating fast, your palms might sweat or feel clammy, and you may even feel a little bit shaky and out of control. All you need to do to calm yourself down is to remember that everyone gets nervous from time to time and that you’re ultimately in control of your mind and body. If you have the right attitude and have some tricks to help calm you, you’ll be able to get rid of those jitters in no time at all.</p>
+      <h4>Here are some positive ways to deal with nervousness:</h4>
+      <ul>
+        <li><b>Take a deep breath:</b> Sometimes, all you need to do to calm down a bit is to focus on the breath rising and falling from your body. Just stop what you’re doing and work on breathing in and breathing out deeply, and letting yourself take long, careful breaths instead of taking the shorter breaths people tend to take when they’re nervous.
+        </li>
+        <li><b>Distract yourself:</b> Though you can’t ignore your fears or worries forever, if you feel like there’s nothing you can do to address it except to worry more, then you may just want to take your mind off of it for a little while. Do something that you think will help you forget your worries and feel more at ease, such as, Reading or watching TV.
+        </li>
+        <li><b>Get the nervous energy out:</b> Try releasing the nervous energy you have through physical activity such as dancing, singing, or running.
+        </li>
+      </ul>
+    </div>
+  ),
+  lonely: (
+    <div>
+      <p>Don’t let yourself fall into the trap of believing that loneliness is forever. You might feel lonely today, this week, or even this month, but it doesn’t mean you are alone or that you have no one who cares for you. Like all feelings, loneliness is impermanent and it does not define who you are. Accept that you feel lonely, then focus on moving forward.</p>
+      <h4>Here are some positive ways to deal with lonliness:</h4>
+      <ul>
+        <li><b>Help Others:</b> Helping others eases loneliness because it makes us be less focused on ourselves. It could be a classmate or a relative who might benefit from some time hanging out with you.
+        </li>
+        <li><b>Do something creative:</b> Try a coloring book or a jigsaw puzzle. Or think outside the box and come up with something that is fun and soothing for you to do
+        </li>
+        <li><b>Sing:</b> It’s almost impossible to feel lonely when you’re singing. I’ve tried it, and it works. Sing solo or let your favorite singer keep you company as you sing together.
+        </li>
+      </ul>
+    </div>
+  )
+
 }
+
+function calculator(firstNumber, secondNumber, operation){
+
+  let answer;
+  if (operation === '+' || operation === 'plus') {
+    answer = +(firstNumber) + +(secondNumber);
+  } else if (operation === '-' || operation === 'minus') {
+    answer = firstNumber - secondNumber;
+  } else if (operation === '*' || operation === 'times' || operation === 'multiplied') {
+    answer = firstNumber * secondNumber;
+  } else if (operation === '/' || operation === 'divided') {
+    answer = firstNumber / secondNumber;
+  }
+
+  return answer;
+
+}
+
 
 class AudioRecognition extends Component {
   constructor(props) {
@@ -41,7 +104,11 @@ class AudioRecognition extends Component {
     this.weatherHandler = this.weatherHandler.bind(this);
     this.mathHandler = this.mathHandler.bind(this);
     this.toDoListHandler = this.toDoListHandler.bind(this);
-    this.dictionaryUrl = '';
+    this.checkForEmotion = this.checkForEmotion.bind(this);
+    this.checkForDefinition = this.checkForDefinition.bind(this);
+    this.checkForMath = this.checkForMath.bind(this);
+    this.checkForWeather = this.checkForWeather.bind(this);
+    this.checkForList = this.checkForList.bind(this);
     this.finishedAsync = false;
     this.addedMedia = '';
 
@@ -57,7 +124,6 @@ class AudioRecognition extends Component {
   }
 
   componentDidMount() {
-    console.log('this.dinosaur is', this.props.dinosaur);
     if (this.props.dinosaur === 'stegosaurus') {
       this.dinosaurGifUrl = 'https://drive.google.com/uc?export=download&id=1jwO0PLd1G4jNBQcbtsW3zDHsc1_K9Kf-';
     } else if (this.props.dinosaur === 'tyrannosaurus') {
@@ -101,9 +167,7 @@ class AudioRecognition extends Component {
       case 'list':
         return (
           <div>
-            {console.log('this should be an array', this.response)}
             <h3>The answer is {this.response}</h3>
-
           </div>
         )
       case 'definition':
@@ -137,19 +201,62 @@ class AudioRecognition extends Component {
     this.addedEmotion = '';
   }
 
-  onThankYou() {
-    this.transcript = '';
-    this.props.stopListening();
+  checkForEmotion(transcriptArr){
+
+    let spokenFeeling = this.feelings.find((feeling) => {
+      return transcriptArr.includes(feeling);
+    });
+    if (spokenFeeling) {
+      this.emotionHandler(spokenFeeling);
+
+    }
+
   }
 
-  async definitionHandler(word) {
-    this.typeOfResponse = 'definition';
-    this.found = true;
-    this.props.stopListening();
+  checkForDefinition(transcriptArr){
+    let spokenDefinition = transcriptArr.find((currentWord) => {
+      return currentWord === 'define' || currentWord === 'definition'
+    });
+    if (spokenDefinition) {
+      let index;
+      index = spokenDefinition === 'define'
+        ? transcriptArr.indexOf('define') + 1
+        : transcriptArr.indexOf('definition') + 2
+      this.definitionHandler(transcriptArr[index]);
+    }
 
+  }
 
-    await this.props.loadDefinition(word)
+  checkForMath(transcriptArr){
+    let spokenOperation = this.mathOperations.find((operation) => {
+      return transcriptArr.includes(operation);
+    });
 
+    if (spokenOperation) {
+      let index = transcriptArr.indexOf(spokenOperation);
+      let secondIndex = spokenOperation === 'divided' || spokenOperation === 'multiplied' ? index + 2 : index + 1;
+      this.mathHandler(transcriptArr[index - 1], transcriptArr[secondIndex], spokenOperation);
+    }
+  }
+
+  checkForWeather(transcriptArr){
+    let spokenWeather = transcriptArr.find((currentWord) => {
+      return currentWord === 'weather' || currentWord === 'temperature'
+    });
+
+    if (spokenWeather) {
+      this.weatherHandler(this.weather);
+    }
+  }
+
+  checkForList(transcriptArr){
+    if (transcriptArr.includes('list')) {
+      let index = transcriptArr.indexOf('list');
+      if ((transcriptArr[index - 2] === 'to' && transcriptArr[index - 1] === 'do') || transcriptArr[index - 1] === 'to-do') {
+        this.toDoListHandler(transcriptArr, index);
+
+      }
+    }
   }
 
   emotionHandler(word) {
@@ -165,40 +272,41 @@ class AudioRecognition extends Component {
 
   }
 
+  async definitionHandler(word) {
+    this.typeOfResponse = 'definition';
+    this.found = true;
+    this.props.stopListening();
+
+    await this.props.loadDefinition(word)
+
+  }
+
+
   weatherHandler(weather) {
 
     if (weather) {
 
       let fahrenheit = weather.data.main.temp * 1.8 + 32;
-      let percipitation = weather.data.weather[0].main;
-      if (percipitation === 'Clear') percipitation = 'Clear Skies';
       fahrenheit = Math.round(fahrenheit).toString();
+      let percipitation = weather.data.weather[0].main === 'Clear' ? 'Clear Skies' : weather.data.weather[0].main;
       this.response = `It is ${fahrenheit} degrees fahrenheit outside with ${percipitation}`;
-      window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response));
-      this.props.stopListening();
-      this.typeOfResponse = 'weather';
+      this.addedMedia = <img height="150px" src={this.props.weatherImages[this.weather.data.weather[0].main]} />
 
     } else {
-      window.speechSynthesis.speak(new SpeechSynthesisUtterance('The temperature and weather is currently unavailiable'));
+      this.response = 'The temperature and weather is currently unavailiable';
     }
 
     this.found = true;
-    this.addedMedia = <img height="150px" src={this.props.weatherImages[this.weather.data.weather[0].main]} />
+    this.props.stopListening();
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response));
+    this.typeOfResponse = 'weather';
+
 
   }
 
   mathHandler(firstNumber, secondNumber, operation) {
 
-    let answer;
-    if (operation === '+' || operation === 'plus') {
-      answer = firstNumber + secondNumber;
-    } else if (operation === '-' || operation === 'minus') {
-      answer = firstNumber - secondNumber;
-    } else if (operation === '*' || operation === 'times' || operation === 'multiplied') {
-      answer = firstNumber * secondNumber;
-    } else if (operation === '/' || operation === 'divided') {
-      answer = firstNumber / secondNumber;
-    }
+    let answer = calculator(firstNumber, secondNumber, operation)
 
     window.speechSynthesis.speak(new SpeechSynthesisUtterance(answer));
     this.props.stopListening();
@@ -227,8 +335,6 @@ class AudioRecognition extends Component {
       this.found = true;
       this.typeOfResponse = 'list';
       this.listening = 'false';
-
-
 
     } else if (arr.includes('remove') || arr.includes('delete')) {
 
@@ -268,64 +374,27 @@ class AudioRecognition extends Component {
 
   }
 
-  render() {
-    console.log('dinosaur', this.props.dinosaur);
 
-    const { transcript, stopListening, browserSupportsSpeechRecognition, listening } = this.props;
+  render() {
+
+    const { transcript, browserSupportsSpeechRecognition, listening } = this.props;
 
     let transcriptArr = transcript.split(' ');
-    let prevWord = '';
-    let prevPrevWord = '';
 
     if (listening === true) {
       for (let word of transcriptArr) {
+
         if (word === 'please') {
-          let spokenFeeling = this.feelings.find((feeling) => {
-            return transcriptArr.includes(feeling);
-          });
-          if (spokenFeeling) {
-            this.emotionHandler(spokenFeeling);
-            break;
-          }
 
-          let spokenDefinition = transcriptArr.find((word) => {
-            return word === 'define' || word === 'definition'
-          });
-          if (spokenDefinition) {
-            let word, index;
-            index = spokenDefinition === 'define'
-              ? transcriptArr.indexOf('define') + 1
-              : transcriptArr.indexOf('definition') + 2
-            this.definitionHandler(transcriptArr[index]);
-            break;
-          }
+          transcriptArr = transcriptArr.map((currentWord) => {
+            return currentWord.toLowerCase();
+          })
 
-          let spokenOperation = this.mathOperations.find((operation) => {
-            return transcriptArr.includes(operation);
-          });
-
-          if (spokenOperation) {
-            let index = transcriptArr.indexOf(spokenOperation);
-            let secondIndex = spokenOperation === 'divided' || spokenOperation === 'multiplied' ? index + 2 : index + 1;
-            this.mathHandler(transcriptArr[index - 1], transcriptArr[secondIndex], spokenOperation);
-          }
-
-          let spokenWeather = transcriptArr.find((word) => {
-            return word === 'weather' || word === 'temperature'
-          });
-
-          if (spokenWeather) {
-            this.weatherHandler(this.weather);
-            break;
-          }
-
-          if (transcriptArr.includes('list')) {
-            let index = transcriptArr.indexOf('list');
-            if ((transcriptArr[index - 2] === 'to' && transcriptArr[index - 1] === 'do') || transcriptArr[index - 1] === 'to-do') {
-              this.toDoListHandler(transcriptArr, index);
-
-            }
-          }
+          this.checkForEmotion(transcriptArr);
+          this.checkForDefinition(transcriptArr);
+          this.checkForMath(transcriptArr);
+          this.checkForWeather(transcriptArr);
+          this.checkForList(transcriptArr);
 
         }
 
@@ -354,7 +423,7 @@ class AudioRecognition extends Component {
                 <div>{this.typeOfResponse === 'feeling' ? addedEmotion[this.typeOfEmotion] : null}</div>
               </div>
             )
-            :(
+            : (
               <div>{this.renderSwitch(this.typeOfResponse)}</div>
             )
 
@@ -371,9 +440,7 @@ class AudioRecognition extends Component {
 /**
  * CONTAINER
  */
-const mapState = (state) => {
-  console.log('in mapState state is ', state);
-  return {
+const mapState = (state) => ({
     motivationalWords: state.motivationalWords,
     definition: state.dictionary,
     toDoList: state.toDoList,
@@ -386,8 +453,7 @@ const mapState = (state) => {
       Mist: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOYEFBd9-513q7RB3Af9b_VNk1y2_J5KcFZzXQLLS8virDIUdJ',
       ThunderStorms: 'https://www.flyingmag.com/sites/flyingmag.com/files/styles/1000_1x_/public/images/2017/06/everything-explained-june.jpg?itok=UsjdV7uz&fc=50,50'
     }
-  }
-}
+})
 
 
 const mapDispatch = dispatch => {

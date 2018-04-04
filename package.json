@@ -1,5 +1,5 @@
 {
-  "name": "virtual-hype-man",
+  "name": "emotional-support-dinosaurs",
   "version": "1.0.0",
   "description": "Some boilerplate code to get you started - get shakin'!",
   "engines": {
@@ -13,7 +13,7 @@
     "lint": "eslint ./ --ignore-path .gitignore",
     "prepush": "npm run lint && npm test",
     "postinstall": "touch secrets.js",
-    "seed": "node script/seed.js",
+    "seed": "node hypeSeed.js",
     "start": "node server",
     "start-dev": "NODE_ENV='development' npm run build-client-watch & npm run start-server",
     "start-server": "nodemon server -e html,js,scss --ignore public --ignore client",
