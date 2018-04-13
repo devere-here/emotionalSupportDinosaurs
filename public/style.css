@@ -25,7 +25,7 @@ form div {
 #home{
   background-image: url('http://i.dailymail.co.uk/i/pix/2013/11/14/article-2507305-19690FD200000578-331_964x757.jpg');
   background-size: cover;
-  height: 850px;
+  height: 100vh;
 
 }
 
@@ -68,7 +68,7 @@ form div {
 #aboutPictureContainer{
   width: 50%;
   background-image: url('https://mymodernmet.com/wp/wp-content/uploads/archive/2SFp48FD9u2pBc-KxVIK_1082134992.jpeg');
-  height: 850px;
+  height: 100vh;
   border-left: black solid 3px;
 }
 
@@ -180,8 +180,6 @@ form div {
   left: 47%;
 }
 
-#audioDinoH2{
-}
 
 .responseImage{
   height: 150px;

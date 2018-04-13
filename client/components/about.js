@@ -13,6 +13,7 @@ const About = () => (
       Emotional Support Dinosaurs also can perform some basic services through 3rd party APIs. This means that Emotional Support Dinosaurs can act as functional dictionaries, calculators,
       checklists, and can provide local weather info.</h3>
       <div id="aboutPageButtonContainer">
+        <Link className="aboutPageButton" to="/instructions">Instructions</Link>
         <Link className="aboutPageButton" to="/choose">Choose Your Dinosaur</Link>
       </div>
     </div>
