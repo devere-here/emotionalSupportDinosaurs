@@ -1,4 +1,4 @@
-export {default as AudioRecognition} from './audioRecognition'
+export {default as NewAudioRecognition} from './newAudioRecognition'
 export {default as UserHome} from './user-home'
 export {default as Home} from './home'
 export {default as Choose} from './choose'

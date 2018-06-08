@@ -64,34 +64,34 @@ let addedEmotion = {
 
 }
 
-// function calculator(firstNumber, secondNumber, operation){
+function calculator(firstNumber, secondNumber, operation){
 
-//   let answer
-//   switch (operation){
-//     case '+':
-//     case 'plus':
-//       answer = +(firstNumber) + +(secondNumber)
-//       break
-//     case '-':
-//     case 'minus':
-//       answer = firstNumber - secondNumber
-//       break
-//     case '*':
-//     case 'times':
-//     case 'multiplied':
-//       answer = firstNumber * secondNumber
-//       break
-//     case '/':
-//     case 'divided':
-//       answer = firstNumber / secondNumber
-//       break
-//     default:
-//       answer = 'sorry I did not understand you'
-//   }
+  let answer
+  switch (operation){
+    case '+':
+    case 'plus':
+      answer = +(firstNumber) + +(secondNumber)
+      break
+    case '-':
+    case 'minus':
+      answer = firstNumber - secondNumber
+      break
+    case '*':
+    case 'times':
+    case 'multiplied':
+      answer = firstNumber * secondNumber
+      break
+    case '/':
+    case 'divided':
+      answer = firstNumber / secondNumber
+      break
+    default:
+      answer = 'sorry I did not understand you'
+  }
 
-//   return answer
+  return answer
 
-// }
+}
 
 
 class AudioRecognition extends Component {
@@ -147,19 +147,19 @@ class AudioRecognition extends Component {
   }
 
 
-  // async getGeoLocation() {
-  //   let weatherUrl
-  //   if (navigator.geolocation) {
+  async getGeoLocation() {
+    let weatherUrl
+    if (navigator.geolocation) {
 
-  //     weatherUrl = await navigator.geolocation.getCurrentPosition((position) => {
-  //       weatherUrl = `https://fcc-weather-api.glitch.me/api/current?lat=${position.coords.latitude}&lon=${position.coords.longitude}`
-  //       axios.get(weatherUrl)
-  //         .then((weatherData) => {
-  //           this.weather = weatherData
-  //         })
-  //     })
-  //   }
-  // }
+      weatherUrl = await navigator.geolocation.getCurrentPosition((position) => {
+        weatherUrl = `https://fcc-weather-api.glitch.me/api/current?lat=${position.coords.latitude}&lon=${position.coords.longitude}`
+        axios.get(weatherUrl)
+          .then((weatherData) => {
+            this.weather = weatherData
+          })
+      })
+    }
+  }
 
   renderSwitch = (type) => {
 
@@ -211,53 +211,53 @@ class AudioRecognition extends Component {
     this.addedEmotion = ''
   }
 
-  // checkForEmotion(transcriptArr){
+  checkForEmotion(transcriptArr){
 
-  //   let spokenFeeling = this.feelings.find((feeling) => {
-  //     return transcriptArr.includes(feeling)
-  //   })
-  //   if (spokenFeeling) {
-  //     this.emotionHandler(spokenFeeling)
+    let spokenFeeling = this.feelings.find((feeling) => {
+      return transcriptArr.includes(feeling)
+    })
+    if (spokenFeeling) {
+      this.emotionHandler(spokenFeeling)
 
-  //   }
+    }
 
-  // }
+  }
 
-  // checkForDefinition(transcriptArr){
-  //   let spokenDefinition = transcriptArr.find((currentWord) => {
-  //     return currentWord === 'define' || currentWord === 'definition'
-  //   })
-  //   if (spokenDefinition) {
-  //     let index
-  //     index = spokenDefinition === 'define'
-  //       ? transcriptArr.indexOf('define') + 1
-  //       : transcriptArr.indexOf('definition') + 2
-  //     this.definitionHandler(transcriptArr[index])
-  //   }
+  checkForDefinition(transcriptArr){
+    let spokenDefinition = transcriptArr.find((currentWord) => {
+      return currentWord === 'define' || currentWord === 'definition'
+    })
+    if (spokenDefinition) {
+      let index
+      index = spokenDefinition === 'define'
+        ? transcriptArr.indexOf('define') + 1
+        : transcriptArr.indexOf('definition') + 2
+      this.definitionHandler(transcriptArr[index])
+    }
 
-  // }
+  }
 
-  // checkForMath(transcriptArr){
-  //   let spokenOperation = this.mathOperations.find((operation) => {
-  //     return transcriptArr.includes(operation)
-  //   })
+  checkForMath(transcriptArr){
+    let spokenOperation = this.mathOperations.find((operation) => {
+      return transcriptArr.includes(operation)
+    })
 
-  //   if (spokenOperation) {
-  //     let index = transcriptArr.indexOf(spokenOperation)
-  //     let secondIndex = spokenOperation === 'divided' || spokenOperation === 'multiplied' ? index + 2 : index + 1
-  //     this.mathHandler(transcriptArr[index - 1], transcriptArr[secondIndex], spokenOperation)
-  //   }
-  // }
+    if (spokenOperation) {
+      let index = transcriptArr.indexOf(spokenOperation)
+      let secondIndex = spokenOperation === 'divided' || spokenOperation === 'multiplied' ? index + 2 : index + 1
+      this.mathHandler(transcriptArr[index - 1], transcriptArr[secondIndex], spokenOperation)
+    }
+  }
 
-  // checkForWeather(transcriptArr){
-  //   let spokenWeather = transcriptArr.find((currentWord) => {
-  //     return currentWord === 'weather' || currentWord === 'temperature'
-  //   })
+  checkForWeather(transcriptArr){
+    let spokenWeather = transcriptArr.find((currentWord) => {
+      return currentWord === 'weather' || currentWord === 'temperature'
+    })
 
-  //   if (spokenWeather) {
-  //     this.weatherHandler(this.weather)
-  //   }
-  // }
+    if (spokenWeather) {
+      this.weatherHandler(this.weather)
+    }
+  }
 
   checkForList(transcriptArr){
     if (transcriptArr.includes('list')) {
@@ -282,49 +282,49 @@ class AudioRecognition extends Component {
 
   }
 
-  // async definitionHandler(word) {
-  //   this.typeOfResponse = 'definition'
-  //   this.found = true
-  //   this.props.stopListening()
+  async definitionHandler(word) {
+    this.typeOfResponse = 'definition'
+    this.found = true
+    this.props.stopListening()
 
-  //   await this.props.loadDefinition(word)
+    await this.props.loadDefinition(word)
 
-  // }
-
-
-  // weatherHandler(weather) {
-
-  //   if (weather) {
-
-  //     let fahrenheit = weather.data.main.temp * 1.8 + 32
-  //     fahrenheit = Math.round(fahrenheit).toString()
-  //     let percipitation = weather.data.weather[0].main === 'Clear' ? 'Clear Skies' : weather.data.weather[0].main
-  //     this.response = `It is ${fahrenheit} degrees fahrenheit outside with ${percipitation}`
-  //     this.addedMedia = <img height="150px" src={this.props.weatherImages[this.weather.data.weather[0].main]} />
-
-  //   } else {
-  //     this.response = 'The temperature and weather is currently unavailiable'
-  //   }
-
-  //   this.found = true
-  //   this.props.stopListening()
-  //   window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response))
-  //   this.typeOfResponse = 'weather'
+  }
 
 
-  // }
+  weatherHandler(weather) {
 
-  // mathHandler(firstNumber, secondNumber, operation) {
+    if (weather) {
 
-  //   let answer = calculator(firstNumber, secondNumber, operation)
+      let fahrenheit = weather.data.main.temp * 1.8 + 32
+      fahrenheit = Math.round(fahrenheit).toString()
+      let percipitation = weather.data.weather[0].main === 'Clear' ? 'Clear Skies' : weather.data.weather[0].main
+      this.response = `It is ${fahrenheit} degrees fahrenheit outside with ${percipitation}`
+      this.addedMedia = <img height="150px" src={this.props.weatherImages[this.weather.data.weather[0].main]} />
 
-  //   window.speechSynthesis.speak(new SpeechSynthesisUtterance(answer))
-  //   this.props.stopListening()
-  //   this.found = true
-  //   this.response = `The answer is ${answer}`
-  //   this.typeOfResponse = 'math'
+    } else {
+      this.response = 'The temperature and weather is currently unavailiable'
+    }
 
-  // }
+    this.found = true
+    this.props.stopListening()
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response))
+    this.typeOfResponse = 'weather'
+
+
+  }
+
+  mathHandler(firstNumber, secondNumber, operation) {
+
+    let answer = calculator(firstNumber, secondNumber, operation)
+
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(answer))
+    this.props.stopListening()
+    this.found = true
+    this.response = `The answer is ${answer}`
+    this.typeOfResponse = 'math'
+
+  }
 
   toDoListHandler(arr, index) {
     let modifierIndex
