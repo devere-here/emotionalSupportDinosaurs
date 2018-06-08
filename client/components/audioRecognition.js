@@ -130,7 +130,6 @@ class AudioRecognition extends Component {
 
     if ((Object.keys(nextProps).length !== 0 && this.props.definition !== nextProps.definition) || this.props.toDoList.length !== nextProps.toDoList.length) this.finishedAsync = true
 
-
   }
 
   componentDidMount() {
@@ -138,12 +137,9 @@ class AudioRecognition extends Component {
       this.dinosaurGifUrl = 'https://drive.google.com/uc?export=download&id=1jwO0PLd1G4jNBQcbtsW3zDHsc1_K9Kf-'
     } else if (this.props.dinosaur === 'tyrannosaurus') {
       this.dinosaurGifUrl = 'https://drive.google.com/uc?export=download&id=10oYkrHB_q2plQJxzELy8EyKsheHEgEip'
-
     } else {
       this.dinosaurGifUrl = 'https://drive.google.com/uc?export=download&id=1G2eR26NW6DJGbUkAsSRsvafatiqzpKR1'
-
     }
-
   }
 
 
