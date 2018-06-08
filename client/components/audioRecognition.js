@@ -2,9 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import SpeechRecognition from 'react-speech-recognition'
 import { fetchPhrases, fetchDefinition, fetchTasks, removeTask, addTask } from '../store'
-import axios from 'axios';
-var GifPlayer = require('react-gif-player');
-
+import axios from 'axios'
+import GifPlayer from 'react-gif-player'
 
 let addedEmotion = {
   happy: (<h1>Yay!</h1>),
@@ -65,101 +64,112 @@ let addedEmotion = {
 
 }
 
-function calculator(firstNumber, secondNumber, operation){
+// function calculator(firstNumber, secondNumber, operation){
 
-  let answer;
-  if (operation === '+' || operation === 'plus') {
-    answer = +(firstNumber) + +(secondNumber);
-  } else if (operation === '-' || operation === 'minus') {
-    answer = firstNumber - secondNumber;
-  } else if (operation === '*' || operation === 'times' || operation === 'multiplied') {
-    answer = firstNumber * secondNumber;
-  } else if (operation === '/' || operation === 'divided') {
-    answer = firstNumber / secondNumber;
-  }
+//   let answer
+//   switch (operation){
+//     case '+':
+//     case 'plus':
+//       answer = +(firstNumber) + +(secondNumber)
+//       break
+//     case '-':
+//     case 'minus':
+//       answer = firstNumber - secondNumber
+//       break
+//     case '*':
+//     case 'times':
+//     case 'multiplied':
+//       answer = firstNumber * secondNumber
+//       break
+//     case '/':
+//     case 'divided':
+//       answer = firstNumber / secondNumber
+//       break
+//     default:
+//       answer = 'sorry I did not understand you'
+//   }
 
-  return answer;
+//   return answer
 
-}
+// }
 
 
 class AudioRecognition extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.getGeoLocation();
-    this.props.loadPhraseData();
-    this.props.loadToDoList();
-    this.feelings = ['happy', 'sad', 'tired', 'nervous', 'angry'];
-    this.mathOperations = ['+', '-', '*', '/', 'plus', 'minus', 'times', 'multiplied', 'divided'];
-    this.clickHandler = this.clickHandler.bind(this);
-    this.response = '';
-    this.videoUrl = '';
-    this.weather = '';
-    this.listening = false;
-    this.typeOfResponse = '';
-    this.found = false;
-    this.definitionHandler = this.definitionHandler.bind(this);
-    this.emotionHandler = this.emotionHandler.bind(this);
-    this.weatherHandler = this.weatherHandler.bind(this);
-    this.mathHandler = this.mathHandler.bind(this);
-    this.toDoListHandler = this.toDoListHandler.bind(this);
-    this.checkForEmotion = this.checkForEmotion.bind(this);
-    this.checkForDefinition = this.checkForDefinition.bind(this);
-    this.checkForMath = this.checkForMath.bind(this);
-    this.checkForWeather = this.checkForWeather.bind(this);
-    this.checkForList = this.checkForList.bind(this);
-    this.finishedAsync = false;
-    this.addedMedia = '';
+    this.getGeoLocation()
+    this.props.loadPhraseData()
+    this.props.loadToDoList()
+    this.feelings = ['happy', 'sad', 'tired', 'nervous', 'angry']
+    this.mathOperations = ['+', '-', '*', '/', 'plus', 'minus', 'times', 'multiplied', 'divided']
+    this.clickHandler = this.clickHandler.bind(this)
+    this.response = ''
+    this.videoUrl = ''
+    this.weather = ''
+    this.listening = false
+    this.typeOfResponse = ''
+    this.found = false
+    this.definitionHandler = this.definitionHandler.bind(this)
+    this.emotionHandler = this.emotionHandler.bind(this)
+    this.weatherHandler = this.weatherHandler.bind(this)
+    this.mathHandler = this.mathHandler.bind(this)
+    this.toDoListHandler = this.toDoListHandler.bind(this)
+    this.checkForEmotion = this.checkForEmotion.bind(this)
+    this.checkForDefinition = this.checkForDefinition.bind(this)
+    this.checkForMath = this.checkForMath.bind(this)
+    this.checkForWeather = this.checkForWeather.bind(this)
+    this.checkForList = this.checkForList.bind(this)
+    this.finishedAsync = false
+    this.addedMedia = ''
 
 
   }
 
   componentWillReceiveProps(nextProps) {
 
-    if ((Object.keys(nextProps).length !== 0 && this.props.definition !== nextProps.definition) || this.props.toDoList.length !== nextProps.toDoList.length) {
-      this.finishedAsync = true;
-    }
+    if ((Object.keys(nextProps).length !== 0 && this.props.definition !== nextProps.definition) || this.props.toDoList.length !== nextProps.toDoList.length) this.finishedAsync = true
+
 
   }
 
   componentDidMount() {
     if (this.props.dinosaur === 'stegosaurus') {
-      this.dinosaurGifUrl = 'https://drive.google.com/uc?export=download&id=1jwO0PLd1G4jNBQcbtsW3zDHsc1_K9Kf-';
+      this.dinosaurGifUrl = 'https://drive.google.com/uc?export=download&id=1jwO0PLd1G4jNBQcbtsW3zDHsc1_K9Kf-'
     } else if (this.props.dinosaur === 'tyrannosaurus') {
-      this.dinosaurGifUrl = 'https://drive.google.com/uc?export=download&id=10oYkrHB_q2plQJxzELy8EyKsheHEgEip';
+      this.dinosaurGifUrl = 'https://drive.google.com/uc?export=download&id=10oYkrHB_q2plQJxzELy8EyKsheHEgEip'
 
     } else {
-      this.dinosaurGifUrl = 'https://drive.google.com/uc?export=download&id=1G2eR26NW6DJGbUkAsSRsvafatiqzpKR1';
+      this.dinosaurGifUrl = 'https://drive.google.com/uc?export=download&id=1G2eR26NW6DJGbUkAsSRsvafatiqzpKR1'
 
     }
 
   }
 
 
-  async getGeoLocation() {
-    let weatherUrl;
-    if (navigator.geolocation) {
+  // async getGeoLocation() {
+  //   let weatherUrl
+  //   if (navigator.geolocation) {
 
-      weatherUrl = await navigator.geolocation.getCurrentPosition((position) => {
-        weatherUrl = `https://fcc-weather-api.glitch.me/api/current?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
-        axios.get(weatherUrl)
-          .then((weatherData) => {
-            this.weather = weatherData;
-          })
-      })
-    }
-  }
+  //     weatherUrl = await navigator.geolocation.getCurrentPosition((position) => {
+  //       weatherUrl = `https://fcc-weather-api.glitch.me/api/current?lat=${position.coords.latitude}&lon=${position.coords.longitude}`
+  //       axios.get(weatherUrl)
+  //         .then((weatherData) => {
+  //           this.weather = weatherData
+  //         })
+  //     })
+  //   }
+  // }
 
   renderSwitch = (type) => {
 
     switch (type) {
       case 'feeling':
         return (<div><h1>{this.response}</h1>
-          <iframe width="560" height="315" src={`${this.videoUrl}?autoplay=1`} allow="autoplay; encrypted-media" allowFullScreen /></div>);
+          <iframe width="560" height="315" src={`${this.videoUrl}?autoplay=1`} allow="autoplay; encrypted-media" allowFullScreen /></div>)
       case 'weather':
         return (<div><h1>{this.response}</h1>
-          <img width="560" height="315" src={this.props.weatherImages[this.weather.data.weather[0].main]} /></div>);
+          <img width="560" height="315" src={this.props.weatherImages[this.weather.data.weather[0].main]} /></div>)
       case 'math':
         return (
           <h3>The answer is {this.response}</h3>
@@ -171,7 +181,7 @@ class AudioRecognition extends Component {
           </div>
         )
       case 'definition':
-        this.transcript = '';
+        this.transcript = ''
         return (
           <div>
             <h1>definition</h1>
@@ -192,68 +202,68 @@ class AudioRecognition extends Component {
 
 
   clickHandler() {
-    this.listening = !this.listening;
-    this.found = false;
-    this.finishedAsync = false;
-    this.props.resetTranscript();
-    this.props.listening ? this.props.stopListening() : this.props.startListening();
-    this.addedMedia = '';
-    this.addedEmotion = '';
+    this.listening = !this.listening
+    this.found = false
+    this.finishedAsync = false
+    this.props.resetTranscript()
+    this.props.listening ? this.props.stopListening() : this.props.startListening()
+    this.addedMedia = ''
+    this.addedEmotion = ''
   }
 
-  checkForEmotion(transcriptArr){
+  // checkForEmotion(transcriptArr){
 
-    let spokenFeeling = this.feelings.find((feeling) => {
-      return transcriptArr.includes(feeling);
-    });
-    if (spokenFeeling) {
-      this.emotionHandler(spokenFeeling);
+  //   let spokenFeeling = this.feelings.find((feeling) => {
+  //     return transcriptArr.includes(feeling)
+  //   })
+  //   if (spokenFeeling) {
+  //     this.emotionHandler(spokenFeeling)
 
-    }
+  //   }
 
-  }
+  // }
 
-  checkForDefinition(transcriptArr){
-    let spokenDefinition = transcriptArr.find((currentWord) => {
-      return currentWord === 'define' || currentWord === 'definition'
-    });
-    if (spokenDefinition) {
-      let index;
-      index = spokenDefinition === 'define'
-        ? transcriptArr.indexOf('define') + 1
-        : transcriptArr.indexOf('definition') + 2
-      this.definitionHandler(transcriptArr[index]);
-    }
+  // checkForDefinition(transcriptArr){
+  //   let spokenDefinition = transcriptArr.find((currentWord) => {
+  //     return currentWord === 'define' || currentWord === 'definition'
+  //   })
+  //   if (spokenDefinition) {
+  //     let index
+  //     index = spokenDefinition === 'define'
+  //       ? transcriptArr.indexOf('define') + 1
+  //       : transcriptArr.indexOf('definition') + 2
+  //     this.definitionHandler(transcriptArr[index])
+  //   }
 
-  }
+  // }
 
-  checkForMath(transcriptArr){
-    let spokenOperation = this.mathOperations.find((operation) => {
-      return transcriptArr.includes(operation);
-    });
+  // checkForMath(transcriptArr){
+  //   let spokenOperation = this.mathOperations.find((operation) => {
+  //     return transcriptArr.includes(operation)
+  //   })
 
-    if (spokenOperation) {
-      let index = transcriptArr.indexOf(spokenOperation);
-      let secondIndex = spokenOperation === 'divided' || spokenOperation === 'multiplied' ? index + 2 : index + 1;
-      this.mathHandler(transcriptArr[index - 1], transcriptArr[secondIndex], spokenOperation);
-    }
-  }
+  //   if (spokenOperation) {
+  //     let index = transcriptArr.indexOf(spokenOperation)
+  //     let secondIndex = spokenOperation === 'divided' || spokenOperation === 'multiplied' ? index + 2 : index + 1
+  //     this.mathHandler(transcriptArr[index - 1], transcriptArr[secondIndex], spokenOperation)
+  //   }
+  // }
 
-  checkForWeather(transcriptArr){
-    let spokenWeather = transcriptArr.find((currentWord) => {
-      return currentWord === 'weather' || currentWord === 'temperature'
-    });
+  // checkForWeather(transcriptArr){
+  //   let spokenWeather = transcriptArr.find((currentWord) => {
+  //     return currentWord === 'weather' || currentWord === 'temperature'
+  //   })
 
-    if (spokenWeather) {
-      this.weatherHandler(this.weather);
-    }
-  }
+  //   if (spokenWeather) {
+  //     this.weatherHandler(this.weather)
+  //   }
+  // }
 
   checkForList(transcriptArr){
     if (transcriptArr.includes('list')) {
-      let index = transcriptArr.indexOf('list');
+      let index = transcriptArr.indexOf('list')
       if ((transcriptArr[index - 2] === 'to' && transcriptArr[index - 1] === 'do') || transcriptArr[index - 1] === 'to-do') {
-        this.toDoListHandler(transcriptArr, index);
+        this.toDoListHandler(transcriptArr, index)
 
       }
     }
@@ -261,125 +271,125 @@ class AudioRecognition extends Component {
 
   emotionHandler(word) {
 
-    this.response = this.props.motivationalWords[word].response;
-    this.videoUrl = this.props.motivationalWords[word].videoUrl;
+    this.response = this.props.motivationalWords[word].response
+    this.videoUrl = this.props.motivationalWords[word].videoUrl
     this.addedMedia = <iframe src={`${this.videoUrl}?autoplay=1`} allow="autoplay; encrypted-media" allowFullScreen />
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response));
-    this.props.stopListening();
-    this.found = true;
-    this.typeOfResponse = 'feeling';
-    this.typeOfEmotion = word;
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response))
+    this.props.stopListening()
+    this.found = true
+    this.typeOfResponse = 'feeling'
+    this.typeOfEmotion = word
 
   }
 
-  async definitionHandler(word) {
-    this.typeOfResponse = 'definition';
-    this.found = true;
-    this.props.stopListening();
+  // async definitionHandler(word) {
+  //   this.typeOfResponse = 'definition'
+  //   this.found = true
+  //   this.props.stopListening()
 
-    await this.props.loadDefinition(word)
+  //   await this.props.loadDefinition(word)
 
-  }
-
-
-  weatherHandler(weather) {
-
-    if (weather) {
-
-      let fahrenheit = weather.data.main.temp * 1.8 + 32;
-      fahrenheit = Math.round(fahrenheit).toString();
-      let percipitation = weather.data.weather[0].main === 'Clear' ? 'Clear Skies' : weather.data.weather[0].main;
-      this.response = `It is ${fahrenheit} degrees fahrenheit outside with ${percipitation}`;
-      this.addedMedia = <img height="150px" src={this.props.weatherImages[this.weather.data.weather[0].main]} />
-
-    } else {
-      this.response = 'The temperature and weather is currently unavailiable';
-    }
-
-    this.found = true;
-    this.props.stopListening();
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response));
-    this.typeOfResponse = 'weather';
+  // }
 
 
-  }
+  // weatherHandler(weather) {
 
-  mathHandler(firstNumber, secondNumber, operation) {
+  //   if (weather) {
 
-    let answer = calculator(firstNumber, secondNumber, operation)
+  //     let fahrenheit = weather.data.main.temp * 1.8 + 32
+  //     fahrenheit = Math.round(fahrenheit).toString()
+  //     let percipitation = weather.data.weather[0].main === 'Clear' ? 'Clear Skies' : weather.data.weather[0].main
+  //     this.response = `It is ${fahrenheit} degrees fahrenheit outside with ${percipitation}`
+  //     this.addedMedia = <img height="150px" src={this.props.weatherImages[this.weather.data.weather[0].main]} />
 
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(answer));
-    this.props.stopListening();
-    this.found = true;
-    this.response = `The answer is ${answer}`;
-    this.typeOfResponse = 'math';
+  //   } else {
+  //     this.response = 'The temperature and weather is currently unavailiable'
+  //   }
 
-  }
+  //   this.found = true
+  //   this.props.stopListening()
+  //   window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response))
+  //   this.typeOfResponse = 'weather'
+
+
+  // }
+
+  // mathHandler(firstNumber, secondNumber, operation) {
+
+  //   let answer = calculator(firstNumber, secondNumber, operation)
+
+  //   window.speechSynthesis.speak(new SpeechSynthesisUtterance(answer))
+  //   this.props.stopListening()
+  //   this.found = true
+  //   this.response = `The answer is ${answer}`
+  //   this.typeOfResponse = 'math'
+
+  // }
 
   toDoListHandler(arr, index) {
-    let modifierIndex;
-    let endingIndex;
+    let modifierIndex
+    let endingIndex
 
     if (arr.includes('add')) {
-      modifierIndex = arr.indexOf('add');
-      endingIndex = arr[index - 1] === 'to-do' ? index - 3 : index - 4;
+      modifierIndex = arr.indexOf('add')
+      endingIndex = arr[index - 1] === 'to-do' ? index - 3 : index - 4
 
-      let newTask = arr.slice(modifierIndex + 1, endingIndex);
+      let newTask = arr.slice(modifierIndex + 1, endingIndex)
 
-      this.props.addToToDoList(newTask.join(' '));
+      this.props.addToToDoList(newTask.join(' '))
 
-      this.response = `You  have just added ${newTask.join(' ')} to your to-do list`;
+      this.response = `You  have just added ${newTask.join(' ')} to your to-do list`
 
-      window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response));
-      this.props.stopListening();
-      this.found = true;
-      this.typeOfResponse = 'list';
-      this.listening = 'false';
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response))
+      this.props.stopListening()
+      this.found = true
+      this.typeOfResponse = 'list'
+      this.listening = 'false'
 
     } else if (arr.includes('remove') || arr.includes('delete')) {
 
-      modifierIndex = arr.indexOf('remove');
+      modifierIndex = arr.indexOf('remove')
       if (modifierIndex === -1) {
-        modifierIndex = arr.includes('delete');
+        modifierIndex = arr.includes('delete')
       }
-      endingIndex = arr[index - 1] === 'to-do' ? index - 3 : index - 4;
-      let removedTask = arr.slice(modifierIndex + 1, endingIndex);
+      endingIndex = arr[index - 1] === 'to-do' ? index - 3 : index - 4
+      let removedTask = arr.slice(modifierIndex + 1, endingIndex)
 
 
-      this.props.removeFromToDoList(removedTask.join(' ').toLowerCase());
-      this.response = `You  have just removed ${removedTask.join(' ')} from your to-do list`;
-      window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response));
+      this.props.removeFromToDoList(removedTask.join(' ').toLowerCase())
+      this.response = `You  have just removed ${removedTask.join(' ')} from your to-do list`
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response))
 
 
     } else {
 
-      let list = this.props.toDoList.map((task) => task.task);
-      list = list.join(', ');
+      let list = this.props.toDoList.map((task) => task.task)
+      list = list.join(', ')
 
       if (this.props.toDoList.length > 1) {
-        let lastIndex = list.lastIndexOf(',');
-        list = list.substring(0, lastIndex) + ' and ' + list.substring(lastIndex + 1);
+        let lastIndex = list.lastIndexOf(',')
+        list = list.substring(0, lastIndex) + ' and ' + list.substring(lastIndex + 1)
       }
 
-      list = `There are ${this.props.toDoList.length} things on your to do list. You should ${list}`;
-      window.speechSynthesis.speak(new SpeechSynthesisUtterance(list));
-      this.response = list;
+      list = `There are ${this.props.toDoList.length} things on your to do list. You should ${list}`
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance(list))
+      this.response = list
 
     }
 
-    this.props.stopListening();
-    this.found = true;
-    this.typeOfResponse = 'list';
-    this.listening = 'false';
+    this.props.stopListening()
+    this.found = true
+    this.typeOfResponse = 'list'
+    this.listening = 'false'
 
   }
 
 
   render() {
 
-    const { transcript, browserSupportsSpeechRecognition, listening } = this.props;
+    const { transcript, browserSupportsSpeechRecognition, listening } = this.props
 
-    let transcriptArr = transcript.split(' ');
+    let transcriptArr = transcript.split(' ')
 
     if (listening === true) {
       for (let word of transcriptArr) {
@@ -387,14 +397,14 @@ class AudioRecognition extends Component {
         if (word === 'please') {
 
           transcriptArr = transcriptArr.map((currentWord) => {
-            return currentWord.toLowerCase();
+            return currentWord.toLowerCase()
           })
 
-          this.checkForEmotion(transcriptArr);
-          this.checkForDefinition(transcriptArr);
-          this.checkForMath(transcriptArr);
-          this.checkForWeather(transcriptArr);
-          this.checkForList(transcriptArr);
+          this.checkForEmotion(transcriptArr)
+          this.checkForDefinition(transcriptArr)
+          this.checkForMath(transcriptArr)
+          this.checkForWeather(transcriptArr)
+          this.checkForList(transcriptArr)
 
         }
 
@@ -459,19 +469,19 @@ const mapState = (state) => ({
 const mapDispatch = dispatch => {
   return {
     loadPhraseData() {
-      dispatch(fetchPhrases());
+      dispatch(fetchPhrases())
     },
     loadDefinition(word) {
-      dispatch(fetchDefinition(word));
+      dispatch(fetchDefinition(word))
     },
     loadToDoList() {
-      dispatch(fetchTasks());
+      dispatch(fetchTasks())
     },
     addToToDoList(task) {
-      dispatch(addTask(task));
+      dispatch(addTask(task))
     },
     removeFromToDoList(task) {
-      dispatch(removeTask(task));
+      dispatch(removeTask(task))
     }
   }
 }

@@ -2,22 +2,16 @@ import React, { Component } from 'react'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {setDinosaur} from '../store'
+import GifPlayer from 'react-gif-player'
 
-var GifPlayer = require('react-gif-player');
 
 class Choose extends Component{
-  constructor(){
-    super();
-    this.handleClick = this.handleClick.bind(this);
 
-  }
-
-  handleClick(dinosaur){
+  handleClick = (dinosaur) => {
     this.props.pickDinosaur(dinosaur)
   }
 
-  render(){
-    return (
+  render = () => (
       <div id="choose">
         <div id="choosePanel">
           <h1>Pick a dinosaur</h1>
@@ -44,27 +38,16 @@ class Choose extends Component{
         </div>
       </div>
     )
-  }
 }
 
+// mapping redux state to props
+const mapState = state => ({ dinosaur: state.dinosaur })
 
-/**
- * CONTAINER
- */
-const mapState = state => {
-  return {
-    dinosaur: state.dinosaur
+const mapDispatch = dispatch => ({
+  pickDinosaur(dinosaur){
+    dispatch(setDinosaur(dinosaur));
   }
-}
-
-const mapDispatch = dispatch => {
-  return {
-    pickDinosaur(dinosaur){
-      dispatch(setDinosaur(dinosaur));
-    }
-
-  }
-}
+})
 
 export default connect(mapState, mapDispatch)(Choose)
 
