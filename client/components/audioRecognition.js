@@ -267,6 +267,7 @@ class AudioRecognition extends Component {
 
   emotionHandler(word) {
 
+    // can i add these to the redux store?
     this.response = this.props.motivationalWords[word].response
     this.videoUrl = this.props.motivationalWords[word].videoUrl
     this.addedMedia = <iframe src={`${this.videoUrl}?autoplay=1`} allow="autoplay; encrypted-media" allowFullScreen />
