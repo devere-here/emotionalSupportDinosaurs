@@ -4,6 +4,8 @@ import SpeechRecognition from 'react-speech-recognition'
 import { fetchPhrases, fetchDefinition, fetchTasks, removeTask, addTask } from '../store'
 import axios from 'axios'
 import GifPlayer from 'react-gif-player'
+import emotionalComponents from './emotionalComponents'
+
 
 export default class AudioRecognition extends Component {
 
@@ -75,7 +77,7 @@ export default class AudioRecognition extends Component {
               <div>
                 <h2 id="audioDinoH2">{this.response}</h2>
                 <div className="responseImage">{this.addedMedia}</div>
-                <div>{this.typeOfResponse === 'feeling' ? addedEmotion[this.typeOfEmotion] : null}</div>
+                <div>{this.typeOfResponse === 'feeling' ? emotionalComponents[this.typeOfEmotion] : null}</div>
               </div>
             )
             : (

@@ -4,6 +4,7 @@ import SpeechRecognition from 'react-speech-recognition'
 import { fetchPhrases, fetchDefinition, fetchTasks, removeTask, addTask } from '../store'
 import axios from 'axios'
 import GifPlayer from 'react-gif-player'
+import allEmotions from './emotionalComponents'
 
 let addedEmotion = {
   happy: (<h1>Yay!</h1>),
@@ -122,6 +123,9 @@ class AudioRecognition extends Component {
     this.checkForList = this.checkForList.bind(this)
     this.finishedAsync = false
     this.addedMedia = ''
+
+
+    console.log('allemotions are', allEmotions)
 
 
   }
