@@ -95,14 +95,14 @@ class NewNewAudioRecognition extends Component {
             this.weatherHandler(this.weather)
           }
 
-          this.checkForList(transcriptArr)
+          let listData = checkForList(transcriptArr, this.props.toDoList)
 
+          if (listData){
+            this.toDoListHandler(listData)
+          }
         }
-
       }
-
     }
-
   }
 
   renderSwitch = (type) => {
@@ -121,7 +121,7 @@ class NewNewAudioRecognition extends Component {
       case 'list':
         return (
           <div>
-            <h3>The answer is {this.response}</h3>
+            <h3>{this.response}</h3>
           </div>
         )
       case 'definition':
@@ -168,14 +168,12 @@ class NewNewAudioRecognition extends Component {
       let index = transcriptArr.indexOf('list')
       if ((transcriptArr[index - 2] === 'to' && transcriptArr[index - 1] === 'do') || transcriptArr[index - 1] === 'to-do') {
         this.toDoListHandler(transcriptArr, index)
-
       }
     }
   }
 
   emotionHandler = (word) => {
 
-    // can i add these to the redux store?
     this.response = this.props.motivationalWords[word].response
     this.videoUrl = this.props.motivationalWords[word].videoUrl
     this.addedMedia = <iframe src={`${this.videoUrl}?autoplay=1`} allow="autoplay; encrypted-media" allowFullScreen />
@@ -184,7 +182,6 @@ class NewNewAudioRecognition extends Component {
     this.found = true
     this.typeOfResponse = 'feeling'
     this.typeOfEmotion = word
-
   }
 
   definitionHandler = async (word) => {
@@ -198,7 +195,6 @@ class NewNewAudioRecognition extends Component {
     this.props.definition.text = 'Sorry the dictionary feature is currently unavailable'
     this.finishedAsync = true
     window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.props.definition.text))
-
   }
 
 
@@ -220,13 +216,9 @@ class NewNewAudioRecognition extends Component {
     this.props.stopListening()
     window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response))
     this.typeOfResponse = 'weather'
-
-
   }
 
   mathHandler = (operationObj) => {
-
-    //let answer = calculator(firstNumber, secondNumber, operation)
     let answer = calculate(operationObj)
 
     window.speechSynthesis.speak(new SpeechSynthesisUtterance(answer))
@@ -234,90 +226,44 @@ class NewNewAudioRecognition extends Component {
     this.found = true
     this.response = `The answer is ${answer}`
     this.typeOfResponse = 'math'
-
   }
 
-  toDoListHandler = (arr, index) => {
-    let modifierIndex
-    let endingIndex
+  toDoListHandler = taskInfo => {
+    let { response, action, task } = taskInfo
 
-    if (arr.includes('add')) {
-      modifierIndex = arr.indexOf('add')
-      endingIndex = arr[index - 1] === 'to-do' ? index - 3 : index - 4
-
-      let newTask = arr.slice(modifierIndex + 1, endingIndex)
-
-      this.props.addToToDoList(newTask.join(' '))
-
-      this.response = `You  have just added ${newTask.join(' ')} to your to-do list`
-
-      window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response))
-      this.props.stopListening()
-      this.found = true
-      this.typeOfResponse = 'list'
-      this.listening = 'false'
-
-    } else if (arr.includes('remove') || arr.includes('delete')) {
-
-      modifierIndex = arr.indexOf('remove')
-      if (modifierIndex === -1) {
-        modifierIndex = arr.includes('delete')
-      }
-      endingIndex = arr[index - 1] === 'to-do' ? index - 3 : index - 4
-      let removedTask = arr.slice(modifierIndex + 1, endingIndex)
-
-
-      this.props.removeFromToDoList(removedTask.join(' ').toLowerCase())
-      this.response = `You  have just removed ${removedTask.join(' ')} from your to-do list`
-      window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response))
-
-
-    } else {
-
-      let list = this.props.toDoList.map((task) => task.task)
-      list = list.join(', ')
-
-      if (this.props.toDoList.length > 1) {
-        let lastIndex = list.lastIndexOf(',')
-        list = list.substring(0, lastIndex) + ' and ' + list.substring(lastIndex + 1)
-      }
-
-      list = `There are ${this.props.toDoList.length} things on your to do list. You should ${list}`
-      window.speechSynthesis.speak(new SpeechSynthesisUtterance(list))
-      this.response = list
-
+    if (action === 'add'){
+      this.props.addToToDoList(task)
+    } else if (action === 'remove'){
+      this.props.removeFromToDoList(task)
     }
 
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(response))
     this.props.stopListening()
     this.found = true
+    this.response = response
     this.typeOfResponse = 'list'
     this.listening = 'false'
-
   }
 
 
   render = () => {
-
-    console.log('emotionalComponents', EmotionalComponents)
 
     const { transcript, browserSupportsSpeechRecognition, listening } = this.props
 
     if (!browserSupportsSpeechRecognition) {
       return null
     }
-
     this.parseCommand(transcript, listening)
 
-      return (
-
-        <div id="audioPage">
-          <button id="audioPageButton" onClick={this.clickHandler}>{listening ? 'Stop' : 'Start'}</button>
-          <div id="audioUserBubble">
-            <h2>{transcript}</h2>
-          </div>
-          <div id="audioDinoBubble">
-            <div id="audioDinoPicture"><GifPlayer gif={this.dinosaurGifUrl} /></div>
-            {this.typeOfResponse !== 'definition'
+    return (
+      <div id="audioPage">
+        <button id="audioPageButton" onClick={this.clickHandler}>{listening ? 'Stop' : 'Start'}</button>
+        <div id="audioUserBubble">
+          <h2>{transcript}</h2>
+        </div>
+        <div id="audioDinoBubble">
+          <div id="audioDinoPicture"><GifPlayer gif={this.dinosaurGifUrl} /></div>
+          {this.typeOfResponse !== 'definition'
             ? (
               <div>
                 <h2 id="audioDinoH2">{this.response}</h2>
@@ -328,15 +274,11 @@ class NewNewAudioRecognition extends Component {
             : (
               <div>{this.renderSwitch(this.typeOfResponse)}</div>
             )
-
-            }
-
-          </div>
+          }
         </div>
-
-      )
+      </div>
+    )
   }
-
 }
 
 /**
@@ -378,9 +320,4 @@ const mapDispatch = dispatch => {
   }
 }
 
-const options = {
-  autoStart: false
-}
-
-
-export default connect(mapState, mapDispatch)(SpeechRecognition(options)(NewNewAudioRecognition))
+export default connect(mapState, mapDispatch)(SpeechRecognition({autoStart: false})(NewNewAudioRecognition))

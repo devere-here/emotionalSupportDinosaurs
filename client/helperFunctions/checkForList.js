@@ -28,14 +28,13 @@ const getRemovedTaskInfo = (transcriptArr, index) => {
 
   endingIndex = transcriptArr[index - 1] === 'to-do' ? index - 3 : index - 4
 
-  let removedTask = transcriptArr.slice(modifierIndex + 1, endingIndex)
+  let removedTask = transcriptArr.slice(modifierIndex + 1, endingIndex).join(' ')
 
   return {
-    response: `You have just removed ${removedTask.join(' ')} from your to-do list`,
+    response: `You have just removed ${removedTask} from your to-do list`,
     action: 'remove',
     task: removedTask
   }
-
 }
 
 const getListInfo = (toDoList) => {
@@ -63,14 +62,15 @@ const determineListAction = (transcriptArr, index, toDoList) => {
   } else if (transcriptArr.includes('remove') || transcriptArr.includes('delete')) {
     actionObj = getRemovedTaskInfo(transcriptArr, index)
   } else {
-    actionObj = getListInfo(transcriptArr, index, toDoList)
+    actionObj = getListInfo(toDoList)
   }
 
   return actionObj
 }
 
 
-export const checkForList = (transcriptArr, toDoList) => {
+const checkForList = (transcriptArr, toDoList) => {
+
   if (transcriptArr.includes('list')) {
     let index = transcriptArr.indexOf('list')
     if ((transcriptArr[index - 2] === 'to' && transcriptArr[index - 1] === 'do') || transcriptArr[index - 1] === 'to-do') {
@@ -80,3 +80,5 @@ export const checkForList = (transcriptArr, toDoList) => {
 
   return null
 }
+
+export default checkForList
