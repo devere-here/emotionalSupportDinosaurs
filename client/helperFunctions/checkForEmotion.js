@@ -6,10 +6,6 @@ const checkForEmotion = (transcriptArr) => {
 
   return spokenFeeling
 
-  // if (spokenFeeling) {
-  //   this.emotionHandler(spokenFeeling)
-  // }
-
 }
 
 export default checkForEmotion
