@@ -5,7 +5,7 @@ import { fetchPhrases, fetchDefinition, fetchTasks, removeTask, addTask } from '
 import axios from 'axios'
 import GifPlayer from 'react-gif-player'
 import EmotionalComponents from './emotionalComponents'
-import { checkForEmotion, checkForDefinition, checkForMath, calculate } from '../helperFunctions'
+import { checkForEmotion, checkForDefinition, checkForMath, calculate, checkForWeather, checkForList } from '../helperFunctions'
 
 
 class NewNewAudioRecognition extends Component {
@@ -89,9 +89,12 @@ class NewNewAudioRecognition extends Component {
             this.mathHandler(mathOperationData)
           }
 
+          let weather = checkForWeather(transcriptArr)
 
+          if (weather){
+            this.weatherHandler(this.weather)
+          }
 
-          this.checkForWeather(transcriptArr)
           this.checkForList(transcriptArr)
 
         }
@@ -319,7 +322,6 @@ class NewNewAudioRecognition extends Component {
               <div>
                 <h2 id="audioDinoH2">{this.response}</h2>
                 <div className="responseImage">{this.addedMedia}</div>
-                {console.log('this.typeOfEmotion', this.typeOfEmotion, 'EmotionalComponents[this.typeOfEmotion]', EmotionalComponents[this.typeOfEmotion])}
                 <div>{this.typeOfResponse === 'feeling' ? EmotionalComponents[this.typeOfEmotion]() : null}</div>
               </div>
             )
