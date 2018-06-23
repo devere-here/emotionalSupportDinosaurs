@@ -5,37 +5,7 @@ import { fetchPhrases, fetchDefinition, fetchTasks, removeTask, addTask } from '
 import axios from 'axios'
 import GifPlayer from 'react-gif-player'
 import EmotionalComponents from './emotionalComponents'
-import { checkForEmotion, checkForDefinition } from '../helperFunctions'
-
-
-function calculator(firstNumber, secondNumber, operation){
-
-  let answer
-  switch (operation){
-    case '+':
-    case 'plus':
-      answer = +(firstNumber) + +(secondNumber)
-      break
-    case '-':
-    case 'minus':
-      answer = firstNumber - secondNumber
-      break
-    case '*':
-    case 'times':
-    case 'multiplied':
-      answer = firstNumber * secondNumber
-      break
-    case '/':
-    case 'divided':
-      answer = firstNumber / secondNumber
-      break
-    default:
-      answer = 'sorry I did not understand you'
-  }
-
-  return answer
-
-}
+import { checkForEmotion, checkForDefinition, checkForMath, calculate } from '../helperFunctions'
 
 
 class NewNewAudioRecognition extends Component {
@@ -45,8 +15,6 @@ class NewNewAudioRecognition extends Component {
     this.getGeoLocation()
     this.props.loadPhraseData()
     this.props.loadToDoList()
-    this.feelings = ['happy', 'sad', 'lonely', 'nervous', 'angry']
-    this.mathOperations = ['+', '-', '*', '/', 'plus', 'minus', 'times', 'multiplied', 'divided']
     this.response = ''
     this.videoUrl = ''
     this.weather = ''
@@ -55,7 +23,6 @@ class NewNewAudioRecognition extends Component {
     this.found = false
     this.finishedAsync = false
     this.addedMedia = ''
-
 
   }
 
@@ -116,7 +83,14 @@ class NewNewAudioRecognition extends Component {
             this.definitionHandler(wordToDefine)
           }
 
-          this.checkForMath(transcriptArr)
+          let mathOperationData = checkForMath(transcriptArr)
+
+          if (mathOperationData){
+            this.mathHandler(mathOperationData)
+          }
+
+
+
           this.checkForWeather(transcriptArr)
           this.checkForList(transcriptArr)
 
@@ -176,18 +150,6 @@ class NewNewAudioRecognition extends Component {
     this.addedEmotion = ''
   }
 
-  checkForMath = (transcriptArr) => {
-    let spokenOperation = this.mathOperations.find((operation) => {
-      return transcriptArr.includes(operation)
-    })
-
-    if (spokenOperation) {
-      let index = transcriptArr.indexOf(spokenOperation)
-      let secondIndex = spokenOperation === 'divided' || spokenOperation === 'multiplied' ? index + 2 : index + 1
-      this.mathHandler(transcriptArr[index - 1], transcriptArr[secondIndex], spokenOperation)
-    }
-  }
-
   checkForWeather = (transcriptArr) => {
     let spokenWeather = transcriptArr.find((currentWord) => {
       return currentWord === 'weather' || currentWord === 'temperature'
@@ -226,7 +188,6 @@ class NewNewAudioRecognition extends Component {
     this.typeOfResponse = 'definition'
     this.found = true
     this.props.stopListening()
-    console.log('word is', word)
 
     //await this.props.loadDefinition(word)
 
@@ -260,9 +221,10 @@ class NewNewAudioRecognition extends Component {
 
   }
 
-  mathHandler = (firstNumber, secondNumber, operation) => {
+  mathHandler = (operationObj) => {
 
-    let answer = calculator(firstNumber, secondNumber, operation)
+    //let answer = calculator(firstNumber, secondNumber, operation)
+    let answer = calculate(operationObj)
 
     window.speechSynthesis.speak(new SpeechSynthesisUtterance(answer))
     this.props.stopListening()

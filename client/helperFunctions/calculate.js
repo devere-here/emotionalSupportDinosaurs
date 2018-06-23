@@ -4,7 +4,9 @@ const addition = (num1, num2) => +(num1) + +(num2),
   division = (num1, num2) => num1 / num2
 
 
-const calculate = (num1, num2, operation) => {
+const calculate = (operationObj) => {
+
+  let { num1, num2, operation } = operationObj
 
   switch (operation){
     case '+':
