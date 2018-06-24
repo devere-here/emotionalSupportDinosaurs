@@ -1,7 +1,5 @@
 const checkForDefinition = (transcriptArr) => {
 
-  console.log('in the place')
-
   let index = '',
     spokenDefinition = transcriptArr.find((currentWord) => currentWord === 'define' || currentWord === 'definition' )
 

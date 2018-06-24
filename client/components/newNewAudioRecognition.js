@@ -15,29 +15,38 @@ class NewNewAudioRecognition extends Component {
     this.getGeoLocation()
     this.props.loadPhraseData()
     this.props.loadToDoList()
-    this.response = ''
-    this.videoUrl = ''
-    this.weather = ''
-    this.listening = false
-    this.typeOfResponse = ''
-    this.found = false
-    this.finishedAsync = false
-    this.addedMedia = ''
+
+    this.state = {
+      response: '',
+      videoUrl: '',
+      weather: '',
+      listening: false,
+      typeOfResponse: '',
+      found: false,
+      finishedAsync: false,
+      addedMedia: '',
+      dinosaurGifUrl: ''
+    }
   }
 
-  componentWillReceiveProps = (nextProps) => {
+  isAsyncActionComplete = (nextProps) => (Object.keys(nextProps).length !== 0 && this.props.definition !== nextProps.definition) || this.props.toDoList.length !== nextProps.toDoList.length
 
-    if ((Object.keys(nextProps).length !== 0 && this.props.definition !== nextProps.definition) || this.props.toDoList.length !== nextProps.toDoList.length) this.finishedAsync = true
+  componentWillReceiveProps = (nextProps) => {
+    if (this.isAsyncActionComplete(nextProps)) this.setState({finishedAsync: true})
   }
 
   componentDidMount = () => {
-    if (this.props.dinosaur === 'stegosaurus') {
-      this.dinosaurGifUrl = 'https://drive.google.com/uc?export=download&id=1jwO0PLd1G4jNBQcbtsW3zDHsc1_K9Kf-'
-    } else if (this.props.dinosaur === 'tyrannosaurus') {
-      this.dinosaurGifUrl = 'https://drive.google.com/uc?export=download&id=10oYkrHB_q2plQJxzELy8EyKsheHEgEip'
-    } else {
-      this.dinosaurGifUrl = 'https://drive.google.com/uc?export=download&id=1G2eR26NW6DJGbUkAsSRsvafatiqzpKR1'
+    let url
+    switch(this.props.dinosaur){
+      case 'stegosaurus':
+        url = 'https://drive.google.com/uc?export=download&id=1jwO0PLd1G4jNBQcbtsW3zDHsc1_K9Kf-'
+        break
+      case 'tyrannosaurus':
+        url = 'https://drive.google.com/uc?export=download&id=10oYkrHB_q2plQJxzELy8EyKsheHEgEip'
+        break
+      default: url = 'https://drive.google.com/uc?export=download&id=1G2eR26NW6DJGbUkAsSRsvafatiqzpKR1'
     }
+    this.setState({dinosaurGifUrl: url})
   }
 
 
@@ -49,7 +58,7 @@ class NewNewAudioRecognition extends Component {
         weatherUrl = `https://fcc-weather-api.glitch.me/api/current?lat=${position.coords.latitude}&lon=${position.coords.longitude}`
         axios.get(weatherUrl)
           .then((weatherData) => {
-            this.weather = weatherData
+            this.setState({weather: weatherData})
           })
       })
     }
@@ -57,9 +66,11 @@ class NewNewAudioRecognition extends Component {
 
   startTalking = (response, responseType) => {
     this.props.stopListening()
-    this.found = true
-    this.typeOfResponse = responseType
     window.speechSynthesis.speak(new SpeechSynthesisUtterance(response))
+    this.setState({
+      found: true,
+      typeOfResponse: responseType
+    })
   }
 
   parseCommand = (transcript, listening) => {
@@ -88,28 +99,34 @@ class NewNewAudioRecognition extends Component {
     if (spokenEmotion) this.emotionHandler(spokenEmotion)
     else if (wordToDefine) this.definitionHandler(wordToDefine)
     else if (mathOperationData) this.mathHandler(mathOperationData)
-    else if (weather) this.weatherHandler(this.weather)
+    else if (weather) this.weatherHandler(this.state.weather)
     else if (listData) this.toDoListHandler(listData)
   }
 
   clickHandler = () =>  {
-    this.listening = !this.listening
-    this.found = false
-    this.finishedAsync = false
+
     this.props.resetTranscript()
     this.props.listening ? this.props.stopListening() : this.props.startListening()
-    this.addedMedia = ''
-    this.addedEmotion = ''
+  
+    this.setState({
+      addedEmotion: '',
+      addedMedia: '',
+      finishedAsync: false,
+      found: false,
+      listening: !this.state.listening
+    })
   }
 
   emotionHandler = (word) => {
 
-    this.response = this.props.motivationalWords[word].response
-    this.videoUrl = this.props.motivationalWords[word].videoUrl
-    this.addedMedia = <iframe src={`${this.videoUrl}?autoplay=1`} allow="autoplay; encrypted-media" allowFullScreen />
+    this.setState({
+      response: this.props.motivationalWords[word].response,
+      videoUrl: this.props.motivationalWords[word].videoUrl,
+      addedMedia: <iframe src={`${this.props.motivationalWords[word].videoUrl}?autoplay=1`} allow="autoplay; encrypted-media" allowFullScreen />
+    })
 
-    this.startTalking(this.response, 'feeling')
-    this.typeOfEmotion = word
+    this.startTalking(this.props.motivationalWords[word].response, 'feeling')
+    this.state.typeOfEmotion = word
   }
 
   definitionHandler = async (word) => {
@@ -117,8 +134,9 @@ class NewNewAudioRecognition extends Component {
 
     // added due to api problems
     this.props.definition.text = 'Sorry the dictionary feature is currently unavailable'
-    this.finishedAsync = true
     this.startTalking(this.props.definition.text, 'definition')
+
+    this.setState({ finishedAsync: true })
   }
 
 
@@ -128,20 +146,20 @@ class NewNewAudioRecognition extends Component {
       let fahrenheit = weather.data.main.temp * 1.8 + 32
       fahrenheit = Math.round(fahrenheit).toString()
       let percipitation = weather.data.weather[0].main === 'Clear' ? 'Clear Skies' : weather.data.weather[0].main
-      this.response = `It is ${fahrenheit} degrees fahrenheit outside with ${percipitation}`
-      this.addedMedia = <img height="150px" src={this.props.weatherImages[this.weather.data.weather[0].main]} />
+      this.state.response = `It is ${fahrenheit} degrees fahrenheit outside with ${percipitation}`
+      this.state.addedMedia = <img height="150px" src={this.props.weatherImages[this.state.weather.data.weather[0].main]} />
 
     } else {
-      this.response = 'The temperature and weather is currently unavailiable'
+      this.state.response = 'The temperature and weather is currently unavailiable'
     }
 
-    this.startTalking(this.response, 'weather')
+    this.startTalking(this.state.response, 'weather')
   }
 
   mathHandler = (operationObj) => {
     let answer = calculate(operationObj)
-    this.response = `The answer is ${answer}`
-    this.startTalking(this.response, 'math')
+    this.state.response = `The answer is ${answer}`
+    this.startTalking(this.state.response, 'math')
   }
 
   toDoListHandler = taskInfo => {
@@ -153,23 +171,22 @@ class NewNewAudioRecognition extends Component {
       this.props.removeFromToDoList(task)
     }
 
-    this.response = response
-    this.startTalking(this.response, 'math')
+    this.state.response = response
+    this.startTalking(this.state.response, 'math')
   }
-
 
   render = () => {
 
     const { transcript, browserSupportsSpeechRecognition, listening } = this.props
-    let weatherImage = this.weather.data ? this.props.weatherImages[this.weather.data.weather[0].main] : null
+    let weatherImage = this.state.weather.data ? this.props.weatherImages[this.state.weather.data.weather[0].main] : null
     let responseData = {
-      type: this.typeOfResponse,
-      response: this.response,
-      finishedAsync: this.finishedAsync,
+      type: this.state.typeOfResponse,
+      response: this.state.response,
+      finishedAsync: this.state.finishedAsync,
       definition: this.props.definition.text,
-      addedMedia: this.addedMedia,
+      addedMedia: this.state.addedMedia,
       weatherImage: weatherImage,
-      emotionalResponse: EmotionalComponents[this.typeOfEmotion],
+      emotionalResponse: EmotionalComponents[this.state.typeOfEmotion],
       dictionaryImage: this.props.definition.image
     }
 
@@ -185,8 +202,8 @@ class NewNewAudioRecognition extends Component {
           <h2>{transcript}</h2>
         </div>
         <div id="audioDinoBubble">
-          <div id="audioDinoPicture"><GifPlayer gif={this.dinosaurGifUrl} /></div>
-          {!this.typeOfResponse ? null : <MainResponse data={responseData} />}
+          <div id="audioDinoPicture"><GifPlayer gif={this.state.dinosaurGifUrl} /></div>
+          {!this.state.typeOfResponse ? null : <MainResponse data={responseData} />}
         </div>
       </div>
     )
@@ -210,7 +227,6 @@ const mapState = (state) => ({
       ThunderStorms: 'https://www.flyingmag.com/sites/flyingmag.com/files/styles/1000_1x_/public/images/2017/06/everything-explained-june.jpg?itok=UsjdV7uz&fc=50,50'
     }
 })
-
 
 const mapDispatch = dispatch => {
   return {
