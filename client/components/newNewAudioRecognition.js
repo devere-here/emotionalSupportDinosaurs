@@ -6,6 +6,7 @@ import axios from 'axios'
 import GifPlayer from 'react-gif-player'
 import EmotionalComponents from './emotionalComponents'
 import { checkForEmotion, checkForDefinition, checkForMath, calculate, checkForWeather, checkForList } from '../helperFunctions'
+import { MainResponse } from './responseComponents'
 
 
 class NewNewAudioRecognition extends Component {
@@ -105,44 +106,6 @@ class NewNewAudioRecognition extends Component {
     }
   }
 
-  renderSwitch = (type) => {
-
-    switch (type) {
-      case 'feeling':
-        return (<div><h1>{this.response}</h1>
-          <iframe width="560" height="315" src={`${this.videoUrl}?autoplay=1`} allow="autoplay; encrypted-media" allowFullScreen /></div>)
-      case 'weather':
-        return (<div><h1>{this.response}</h1>
-          <img width="560" height="315" src={this.props.weatherImages[this.weather.data.weather[0].main]} /></div>)
-      case 'math':
-        return (
-          <h3>The answer is {this.response}</h3>
-        )
-      case 'list':
-        return (
-          <div>
-            <h3>{this.response}</h3>
-          </div>
-        )
-      case 'definition':
-        this.transcript = ''
-        return (
-          <div>
-            <h1>definition</h1>
-            {!this.finishedAsync
-              ? <p>Waiting...</p>
-              : (<div>
-                <p>{this.props.definition.text}</p>
-                <img height="150" src={this.props.definition.image} />
-              </div>)
-            }
-          </div>
-        )
-      default:
-        return (<h1>Hello Steven</h1>)
-    }
-  }
-
   clickHandler = () =>  {
     this.listening = !this.listening
     this.found = false
@@ -173,6 +136,8 @@ class NewNewAudioRecognition extends Component {
   }
 
   emotionHandler = (word) => {
+
+    console.log('in emotionHandler')
 
     this.response = this.props.motivationalWords[word].response
     this.videoUrl = this.props.motivationalWords[word].videoUrl
@@ -250,6 +215,8 @@ class NewNewAudioRecognition extends Component {
 
     const { transcript, browserSupportsSpeechRecognition, listening } = this.props
 
+    let weatherImage = this.weather.data ? this.props.weatherImages[this.weather.data.weather[0].main] : null
+
     if (!browserSupportsSpeechRecognition) {
       return null
     }
@@ -263,16 +230,12 @@ class NewNewAudioRecognition extends Component {
         </div>
         <div id="audioDinoBubble">
           <div id="audioDinoPicture"><GifPlayer gif={this.dinosaurGifUrl} /></div>
-          {this.typeOfResponse !== 'definition'
+          {!this.typeOfResponse
             ? (
-              <div>
-                <h2 id="audioDinoH2">{this.response}</h2>
-                <div className="responseImage">{this.addedMedia}</div>
-                <div>{this.typeOfResponse === 'feeling' ? EmotionalComponents[this.typeOfEmotion]() : null}</div>
-              </div>
+              null
             )
             : (
-              <div>{this.renderSwitch(this.typeOfResponse)}</div>
+              <MainResponse type={this.typeOfResponse} response={this.response} videoUrl={this.videoUrl} emotionalResponse={EmotionalComponents[this.typeOfEmotion]} addedMedia = {this.addedMedia} weatherImage={weatherImage} definition={this.props.definition.text} dictionaryImage={this.props.definition.image} finishedAsync={this.finishedAsync}/>
             )
           }
         </div>
@@ -280,6 +243,9 @@ class NewNewAudioRecognition extends Component {
     )
   }
 }
+
+              /*<div>{this.renderSwitch(this.typeOfResponse)}</div>*/
+
 
 /**
  * CONTAINER

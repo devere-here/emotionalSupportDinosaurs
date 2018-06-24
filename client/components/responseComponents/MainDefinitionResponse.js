@@ -6,9 +6,8 @@ const MainDefinitionResponse = (props) => (
     {!props.finishedAsync
       ? <p>Waiting...</p>
       : (<div>
-        {window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.props.definition.text))}
-        <p>{props.definition.text}</p>
-        <img height="150" src={props.definition.image} />
+        <p>{props.definition}</p>
+        <img height="150" src={props.dictionaryImage} />
       </div>)
     }
   </div>

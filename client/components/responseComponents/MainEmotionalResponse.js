@@ -2,8 +2,9 @@ import React from 'react'
 
 const MainEmotionalResponse = (props) => (
   <div>
-    <h1>{props.response}</h1>
-    <iframe width="560" height="315" src={`${props.videoUrl}?autoplay=1`} allow="autoplay; encrypted-media" allowFullScreen />
+    <h2 id="audioDinoH2">{props.response}</h2>
+    <div className="responseImage">{props.addedMedia}</div>
+    <div>{ props.emotionalResponse() }</div>
   </div>
 )
 
