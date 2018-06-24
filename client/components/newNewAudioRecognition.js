@@ -8,7 +8,6 @@ import EmotionalComponents from './emotionalComponents'
 import { checkForEmotion, checkForDefinition, checkForMath, calculate, checkForWeather, checkForList } from '../helperFunctions'
 import { MainResponse } from './responseComponents'
 
-
 class NewNewAudioRecognition extends Component {
   constructor(props) {
     super(props)
@@ -24,13 +23,11 @@ class NewNewAudioRecognition extends Component {
     this.found = false
     this.finishedAsync = false
     this.addedMedia = ''
-
   }
 
   componentWillReceiveProps = (nextProps) => {
 
     if ((Object.keys(nextProps).length !== 0 && this.props.definition !== nextProps.definition) || this.props.toDoList.length !== nextProps.toDoList.length) this.finishedAsync = true
-
   }
 
   componentDidMount = () => {
@@ -58,6 +55,12 @@ class NewNewAudioRecognition extends Component {
     }
   }
 
+  startTalking = (response, responseType) => {
+    this.props.stopListening()
+    this.found = true
+    this.typeOfResponse = responseType
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(response))
+  }
 
   parseCommand = (transcript, listening) => {
 
@@ -65,45 +68,28 @@ class NewNewAudioRecognition extends Component {
 
     if (listening === true) {
       for (let word of transcriptArr) {
-
         if (word === 'please') {
 
-          transcriptArr = transcriptArr.map((currentWord) => {
-            return currentWord.toLowerCase()
-          })
-
-          let spokenEmotion = checkForEmotion(transcriptArr)
-
-          if (spokenEmotion){
-            this.emotionHandler(spokenEmotion)
-          }
-
-          let wordToDefine = checkForDefinition(transcriptArr)
-
-          if (wordToDefine){
-            this.definitionHandler(wordToDefine)
-          }
-
-          let mathOperationData = checkForMath(transcriptArr)
-
-          if (mathOperationData){
-            this.mathHandler(mathOperationData)
-          }
-
-          let weather = checkForWeather(transcriptArr)
-
-          if (weather){
-            this.weatherHandler(this.weather)
-          }
-
-          let listData = checkForList(transcriptArr, this.props.toDoList)
-
-          if (listData){
-            this.toDoListHandler(listData)
-          }
+          transcriptArr = transcriptArr.map((currentWord) => currentWord.toLowerCase())
+          this.checkForKeyWords(transcriptArr)
         }
       }
     }
+  }
+
+  checkForKeyWords = (transcriptArr) => {
+
+    let spokenEmotion = checkForEmotion(transcriptArr),
+      wordToDefine = checkForDefinition(transcriptArr),
+      mathOperationData = checkForMath(transcriptArr),
+      weather = checkForWeather(transcriptArr),
+      listData = checkForList(transcriptArr, this.props.toDoList)
+
+    if (spokenEmotion) this.emotionHandler(spokenEmotion)
+    else if (wordToDefine) this.definitionHandler(wordToDefine)
+    else if (mathOperationData) this.mathHandler(mathOperationData)
+    else if (weather) this.weatherHandler(this.weather)
+    else if (listData) this.toDoListHandler(listData)
   }
 
   clickHandler = () =>  {
@@ -116,55 +102,27 @@ class NewNewAudioRecognition extends Component {
     this.addedEmotion = ''
   }
 
-  checkForWeather = (transcriptArr) => {
-    let spokenWeather = transcriptArr.find((currentWord) => {
-      return currentWord === 'weather' || currentWord === 'temperature'
-    })
-
-    if (spokenWeather) {
-      this.weatherHandler(this.weather)
-    }
-  }
-
-  checkForList = (transcriptArr) => {
-    if (transcriptArr.includes('list')) {
-      let index = transcriptArr.indexOf('list')
-      if ((transcriptArr[index - 2] === 'to' && transcriptArr[index - 1] === 'do') || transcriptArr[index - 1] === 'to-do') {
-        this.toDoListHandler(transcriptArr, index)
-      }
-    }
-  }
-
   emotionHandler = (word) => {
-
-    console.log('in emotionHandler')
 
     this.response = this.props.motivationalWords[word].response
     this.videoUrl = this.props.motivationalWords[word].videoUrl
     this.addedMedia = <iframe src={`${this.videoUrl}?autoplay=1`} allow="autoplay; encrypted-media" allowFullScreen />
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response))
-    this.props.stopListening()
-    this.found = true
-    this.typeOfResponse = 'feeling'
+
+    this.startTalking(this.response, 'feeling')
     this.typeOfEmotion = word
   }
 
   definitionHandler = async (word) => {
-    this.typeOfResponse = 'definition'
-    this.found = true
-    this.props.stopListening()
-
     //await this.props.loadDefinition(word)
 
     // added due to api problems
     this.props.definition.text = 'Sorry the dictionary feature is currently unavailable'
     this.finishedAsync = true
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.props.definition.text))
+    this.startTalking(this.props.definition.text, 'definition')
   }
 
 
   weatherHandler = (weather) => {
-
     if (weather) {
 
       let fahrenheit = weather.data.main.temp * 1.8 + 32
@@ -177,20 +135,13 @@ class NewNewAudioRecognition extends Component {
       this.response = 'The temperature and weather is currently unavailiable'
     }
 
-    this.found = true
-    this.props.stopListening()
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.response))
-    this.typeOfResponse = 'weather'
+    this.startTalking(this.response, 'weather')
   }
 
   mathHandler = (operationObj) => {
     let answer = calculate(operationObj)
-
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(answer))
-    this.props.stopListening()
-    this.found = true
     this.response = `The answer is ${answer}`
-    this.typeOfResponse = 'math'
+    this.startTalking(this.response, 'math')
   }
 
   toDoListHandler = taskInfo => {
@@ -202,20 +153,25 @@ class NewNewAudioRecognition extends Component {
       this.props.removeFromToDoList(task)
     }
 
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(response))
-    this.props.stopListening()
-    this.found = true
     this.response = response
-    this.typeOfResponse = 'list'
-    this.listening = 'false'
+    this.startTalking(this.response, 'math')
   }
 
 
   render = () => {
 
     const { transcript, browserSupportsSpeechRecognition, listening } = this.props
-
     let weatherImage = this.weather.data ? this.props.weatherImages[this.weather.data.weather[0].main] : null
+    let responseData = {
+      type: this.typeOfResponse,
+      response: this.response,
+      finishedAsync: this.finishedAsync,
+      definition: this.props.definition.text,
+      addedMedia: this.addedMedia,
+      weatherImage: weatherImage,
+      emotionalResponse: EmotionalComponents[this.typeOfEmotion],
+      dictionaryImage: this.props.definition.image
+    }
 
     if (!browserSupportsSpeechRecognition) {
       return null
@@ -230,22 +186,12 @@ class NewNewAudioRecognition extends Component {
         </div>
         <div id="audioDinoBubble">
           <div id="audioDinoPicture"><GifPlayer gif={this.dinosaurGifUrl} /></div>
-          {!this.typeOfResponse
-            ? (
-              null
-            )
-            : (
-              <MainResponse type={this.typeOfResponse} response={this.response} videoUrl={this.videoUrl} emotionalResponse={EmotionalComponents[this.typeOfEmotion]} addedMedia = {this.addedMedia} weatherImage={weatherImage} definition={this.props.definition.text} dictionaryImage={this.props.definition.image} finishedAsync={this.finishedAsync}/>
-            )
-          }
+          {!this.typeOfResponse ? null : <MainResponse data={responseData} />}
         </div>
       </div>
     )
   }
 }
-
-              /*<div>{this.renderSwitch(this.typeOfResponse)}</div>*/
-
 
 /**
  * CONTAINER

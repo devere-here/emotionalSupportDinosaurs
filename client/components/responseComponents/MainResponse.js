@@ -8,7 +8,7 @@ export default class MainResponse extends Component{
 
   renderSwitch = (type) => {
     console.log('in the render switch props are', this.props)
-    let { response, finishedAsync, definition, videoUrl, addedMedia, emotionalResponse, weatherImage, dictionaryImage} = this.props
+    let { response, finishedAsync, definition, addedMedia, emotionalResponse, weatherImage, dictionaryImage} = this.props.data
     switch (type) {
       case 'feeling':
         return <MainEmotionalResponse response={response} addedMedia={addedMedia} emotionalResponse={emotionalResponse} />
@@ -30,7 +30,7 @@ export default class MainResponse extends Component{
 
     <div>
       {console.log('in main response')}
-      {this.renderSwitch(this.props.type)}
+      {this.renderSwitch(this.props.data.type)}
     </div>
   )
 }
