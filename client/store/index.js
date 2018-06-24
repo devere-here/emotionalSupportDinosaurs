@@ -2,10 +2,10 @@ import {createStore, combineReducers, applyMiddleware} from 'redux'
 import createLogger from 'redux-logger'
 import thunkMiddleware from 'redux-thunk'
 import {composeWithDevTools} from 'redux-devtools-extension'
-import motivationalWords from './motivationalWords';
-import dictionary from './dictionary';
-import toDoList from './toDoList';
-import dinosaur from './dinosaur';
+import motivationalWords from './motivationalWords'
+import dictionary from './dictionary'
+import toDoList from './toDoList'
+import dinosaur from './dinosaur'
 
 const reducer = combineReducers({motivationalWords, dictionary, toDoList, dinosaur})
 const middleware = composeWithDevTools(applyMiddleware(
@@ -15,7 +15,7 @@ const middleware = composeWithDevTools(applyMiddleware(
 const store = createStore(reducer, middleware)
 
 export default store
-export * from './motivationalWords';
-export * from './dictionary';
-export * from './toDoList';
-export * from './dinosaur';
+export * from './motivationalWords'
+export * from './dictionary'
+export * from './toDoList'
+export * from './dinosaur'

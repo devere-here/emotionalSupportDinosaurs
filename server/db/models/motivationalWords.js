@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const db = require('../db');
+const Sequelize = require('sequelize'),
+  db = require('../db')
 
 const MotivationalWords = db.define('motivationalWords', {
   keyWord: {
@@ -12,6 +12,6 @@ const MotivationalWords = db.define('motivationalWords', {
     type: Sequelize.STRING
   }
 
-});
+})
 
-module.exports = MotivationalWords;
+module.exports = MotivationalWords

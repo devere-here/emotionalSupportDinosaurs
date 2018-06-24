@@ -15,10 +15,4 @@ const Navbar = () => (
   </div>
 )
 
-/**
- * CONTAINER
- */
-
 export default withRouter((Navbar))
-
-

@@ -1,0 +1,6 @@
+export {default as checkForEmotion} from './checkForEmotion'
+export {default as checkForDefinition} from './checkForDefinition'
+export {default as checkForMath} from './checkForMath'
+export {default as checkForWeather} from './checkForWeather'
+export {default as checkForList} from './checkForList'
+export {default as calculate} from './calculate'

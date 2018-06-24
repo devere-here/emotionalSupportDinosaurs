@@ -17,6 +17,7 @@ const Instructions = () => (
         <li>Sad - tells you how to manage sadness and shows a video to make you less sad</li>
         <li>Angry - asks you to take a deep breath tells you how to manage anger and shows a video to help you calm down</li>
         <li>Nervous - asks you to take a deep breath tells you different steps you can take to be less nervous</li>
+        <li>Lonely - tells you that it's here for you</li>
       </ul>
       <h2>Dictionary Keywords</h2>
       <ul>

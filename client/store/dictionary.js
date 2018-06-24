@@ -3,7 +3,7 @@ import axios from 'axios'
 /**
  * ACTION TYPES
  */
-const GET_DEFINITION = 'GET_DEFINITION';
+const GET_DEFINITION = 'GET_DEFINITION'
 
 /**
  * INITIAL STATE
@@ -20,14 +20,13 @@ const getDefinition = (definition) => ({type: GET_DEFINITION, definition})
 export const fetchDefinition = (word) => async (dispatch) => {
   try {
 
-    let value = await axios.post('api/apiRequests', {word});
-    console.log('returned this value', value);
-    let obj = {
+    let value = await axios.post('api/apiRequests', {word}),
+      obj = {
       text: `${word}, ${value.data[0].definition}`,
       image: value.data[0].image
     }
 
-    dispatch(getDefinition(obj));
+    dispatch(getDefinition(obj))
 
   }
   catch (err) {
@@ -42,7 +41,6 @@ export const fetchDefinition = (word) => async (dispatch) => {
 export default function (state = defaultDefinition, action) {
   switch (action.type) {
     case GET_DEFINITION:
-      console.log('in reducer action.definition ', action.definition);
       return action.definition
     default:
       return state

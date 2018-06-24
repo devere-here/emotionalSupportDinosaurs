@@ -1,20 +1,17 @@
 /**
  * ACTION TYPES
  */
-const SET_DINOSAUR = 'SET_DINOSAUR';
+const SET_DINOSAUR = 'SET_DINOSAUR'
 
 /**
  * INITIAL STATE
  */
-const defaultDinosaur = '';
+const defaultDinosaur = ''
 
 /**
  * ACTION CREATORS
  */
-export const setDinosaur = (dinosaur) => {
-  console.log('in setDinosaur');
-  return {type: SET_DINOSAUR, dinosaur}
-}
+export const setDinosaur = (dinosaur) => ({type: SET_DINOSAUR, dinosaur})
 
 /**
  * REDUCER
