@@ -44,3 +44,9 @@ All actions are triggered by the keyword `Please`. When you say please this prog
 - `to-do list` - this keyword will trigger all to do list operations. The specific operation will depend on what word you say in relation to `to-do list` in your sentence. If there are no to-do list specific keywords then the dinosaur will just tell you your to-do list.
 - `add` - adds a new task to your to-do list. The task will be whatever you say after the word 'add' and before the phrase 'to my to-do list'.
 - `remove` - removes a task from your to-do list. The task will be whatever you say after the word 'remove' and before the phrase 'to my to-do list' Only works if the phrase you say exists on the to-do list.
+
+<h2>Choose Your Own Dinosaur Page</h2>
+<img src="https://drive.google.com/uc?export=download&id=1cTB2NpgN0ympmAnjFDk-NQHdI3Nd73ha"/>
+
+<h2>Talk To Your Dinosaur Page</h2>
+<img src="https://drive.google.com/uc?export=download&id=1tuQkZIOKX2_0b3bxlk2iwxjKOlinsPj0"/>
